@@ -5,7 +5,7 @@ namespace Domain.Dto;
 public class UserDto
 {
     [Required]
-    public string PhoneNumber { get; set; }
+    public string UserName { get; set; }
     [Required]
     public string Password { get; set; }
 }

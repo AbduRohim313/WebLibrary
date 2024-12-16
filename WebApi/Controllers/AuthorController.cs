@@ -1,5 +1,5 @@
 ﻿using Domain.Dto;
-using Domain.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
@@ -28,6 +28,7 @@ public class AuthorController : ControllerBase
         return Ok(await _authorService.GetById(id));
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateAuthor([FromBody] AuthorDto authorDto)
     {
