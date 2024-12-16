@@ -19,7 +19,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
 
 
 builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
+builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
+builder.Services.AddScoped<IService<BookDto>, BookService>();
 
 
 builder.Services.AddControllers();
