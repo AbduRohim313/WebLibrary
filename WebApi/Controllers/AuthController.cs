@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Domain.Dto;
 using Domain.Entity;
+using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,22 +15,22 @@ namespace WebApi.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    UserManager<User> userManager;
+    UserManager<User> _userManager;
     IConfiguration _configuration;
 
     public AuthController(UserManager<User> userManager, IConfiguration configuration)
     {
-        this.userManager = userManager;
+        this._userManager = userManager;
         _configuration = configuration;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
-        var user = await userManager.FindByNameAsync(registerDto.UserName);
+        var user = await _userManager.FindByNameAsync(registerDto.UserName);
         if (user != null)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponceDto()
+            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
             {
                 Message = "User topiladi",
                 Status = "error"
@@ -39,11 +40,9 @@ public class AuthController : ControllerBase
         var newUser = new User()
         {
             UserName = registerDto.UserName,
-            PasswordHash = registerDto.Password,
-            SecurityStamp = Guid.NewGuid().ToString(),
         };
 
-        var result = await userManager.CreateAsync(newUser, registerDto.Password);
+        var result = await _userManager.CreateAsync(newUser, registerDto.Password);
         if (!result.Succeeded)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new ResponceDto()
@@ -52,6 +51,7 @@ public class AuthController : ControllerBase
                 Message = "user yaratilmadi",
             });
         }
+        await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
 
         return Ok(new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" });
     }
@@ -59,10 +59,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserDto userDto)
     {
-        var user = await userManager.FindByNameAsync(userDto.UserName);
-        if (user != null && await userManager.CheckPasswordAsync(user, userDto.Password))
+        var user = await _userManager.FindByNameAsync(userDto.UserName);
+        if (user != null && await _userManager.CheckPasswordAsync(user, userDto.Password))
         {
-            var roles = await userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.AddToRoleAsync(user, Position.Admin.ToString());
             List<Claim> claims = new List<Claim>();
             Claim claim = new Claim(ClaimTypes.Name, userDto.UserName);
             Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
@@ -82,4 +83,43 @@ public class AuthController : ControllerBase
 
         return Unauthorized();
     }
+
+    [HttpPut("updateToAdmin")]
+    public async Task<IActionResult> UpdateToAdmin(UserDto userDto)
+    {
+        // Найти пользователя
+        var user = await _userManager.FindByNameAsync(userDto.UserName);
+        if (user == null)
+        {
+            return NotFound(new { Status = "Error", Message = "User not found" });
+        }
+
+        // Удалить пользователя из роли "User", если он в ней
+        if (await _userManager.IsInRoleAsync(user, Position.User.ToString()))
+        {
+            var removeResult = await _userManager.RemoveFromRoleAsync(user, Position.User.ToString());
+            if (!removeResult.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Status = "Error",
+                    Message = "Failed to remove User role"
+                });
+            }
+        }
+
+        // Добавить пользователя в роль "Admin"
+        var addResult = await _userManager.AddToRoleAsync(user, Position.Admin.ToString());
+        if (!addResult.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Status = "Error",
+                Message = "Failed to add Admin role"
+            });
+        }
+
+        return Ok(new { Status = "Success", Message = $"{userDto.UserName} is now an Admin" });
+    }
+
 }
