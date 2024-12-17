@@ -2,6 +2,7 @@ using System.Text;
 using Domain;
 using Domain.Dto;
 using Domain.Entity;
+using Domain.Enums;
 using Domain.Interface;
 using Domain.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,13 +37,16 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:ValidIssuer"],
+        ValidAudience = builder.Configuration["Jwt:ValidAudience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
     };
 });
-builder.Services.AddAuthorization();
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole(Position.Admin.ToString()));
+});
 builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
@@ -69,3 +73,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

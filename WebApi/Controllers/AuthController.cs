@@ -5,6 +5,7 @@ using System.Text;
 using Domain.Dto;
 using Domain.Entity;
 using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -63,7 +64,6 @@ public class AuthController : ControllerBase
         if (user != null && await _userManager.CheckPasswordAsync(user, userDto.Password))
         {
             var roles = await _userManager.GetRolesAsync(user);
-            await _userManager.AddToRoleAsync(user, Position.Admin.ToString());
             List<Claim> claims = new List<Claim>();
             Claim claim = new Claim(ClaimTypes.Name, userDto.UserName);
             Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
@@ -75,20 +75,27 @@ public class AuthController : ControllerBase
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            var token = new JwtSecurityToken(_configuration["JWT:Issur"], _configuration["JWT:Audience"],
-                claims, expires: DateTime.Now.AddMinutes(2),
+            var token = new JwtSecurityToken(_configuration["JWT:ValidIssuer"], _configuration["JWT:ValidAudience"],
+                claims, expires: DateTime.Now.AddHours(2),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
         }
 
         return Unauthorized();
     }
+    [HttpGet("test-role")]
+    public IActionResult TestRole()
+    {
+        var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        return Ok($"User role: {userRole}");
+    }
 
     [HttpPut("updateToAdmin")]
-    public async Task<IActionResult> UpdateToAdmin(UserDto userDto)
+    [Authorize(Roles = nameof(Position.Admin))]
+    public async Task<IActionResult> UpdateToAdmin(ToAdminDto toAdminDto)
     {
         // Найти пользователя
-        var user = await _userManager.FindByNameAsync(userDto.UserName);
+        var user = await _userManager.FindByNameAsync(toAdminDto.Name);
         if (user == null)
         {
             return NotFound(new { Status = "Error", Message = "User not found" });
@@ -119,7 +126,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        return Ok(new { Status = "Success", Message = $"{userDto.UserName} is now an Admin" });
+        return Ok(new { Status = "Success", Message = $"{toAdminDto.Name} is now an Admin" });
     }
 
 }

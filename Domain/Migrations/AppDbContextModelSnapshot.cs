@@ -118,7 +118,7 @@ namespace Domain.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Position")
+                    b.Property<int>("Role")
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")

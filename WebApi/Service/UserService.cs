@@ -1,20 +1,12 @@
 ﻿using Domain.Entity;
-using Microsoft.AspNetCore.Identity;
+using Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
-namespace WebApi.Controllers;
+namespace WebApi.Service;
 
-// [Route("[controller]")]
-// [ApiController]
-public class UserController : ControllerBase
+public class UserService : IService<User>
 {
-    UserManager<User> _userManager;
-
-    public UserController(UserManager<User> userManager)
-    {
-        _userManager = userManager;
-    }
     public Task<IEnumerable<User>> GetAll()
     {
         throw new NotImplementedException();

@@ -1,4 +1,6 @@
 ﻿using Domain.Dto;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
@@ -29,6 +31,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(Position.Admin))]
     public async Task<IActionResult> Post([FromBody] BookDto bookDto)
     {
         var result = await _bookService.Create(bookDto);
@@ -36,6 +39,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = nameof(Position.Admin))]
     public async Task<IActionResult> Put([FromBody] BookDto bookDto)
     {
         var result = await _bookService.Update(bookDto);
@@ -43,6 +47,7 @@ public class BookController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = nameof(Position.Admin))]
     public async Task<IActionResult> Delete(int id)
     {
         return await _bookService.Delete(id) ? NoContent() : NotFound();
