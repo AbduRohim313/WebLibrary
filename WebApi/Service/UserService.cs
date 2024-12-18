@@ -1,4 +1,4 @@
-﻿using Domain.Dto;
+﻿using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
 using Domain.Interface;
@@ -10,7 +10,7 @@ namespace WebApi.Service;
 
 // [Route("[controller]")]
 // [ApiController]
-public class UserService : IAuthService<UserDto>
+public class UserService : IAuthService<UserDto, UserGetById>
 {
     UserManager<User> _userManager;
 
@@ -35,13 +35,15 @@ public class UserService : IAuthService<UserDto>
         return result;
     }
 
-    public async Task<UserDto> GetById(string id)
+    public async Task<UserGetById> GetById(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user != null)
-            return new UserDto()
+            return new UserGetById()
             {
+                Id = user.Id,
                 UserName = user.UserName!,
+                Books = user.Books
             };
         return null;
     }
@@ -75,7 +77,7 @@ public class UserService : IAuthService<UserDto>
 
     public async Task<ResponceDto> Update(UserDto userDto)
     {
-        var user = await _userManager.FindByNameAsync(userDto.UserName);
+        var user = await _userManager.FindByIdAsync(userDto.Id);
         if(user == null)
             return null;
         user.UserName = userDto.UserName;

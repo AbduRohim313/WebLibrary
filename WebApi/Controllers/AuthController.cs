@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Domain.Dto;
+using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;

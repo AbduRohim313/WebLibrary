@@ -1,4 +1,4 @@
-﻿using Domain.Dto;
+﻿using Domain.Dto.UserDto;
 
 namespace Domain.Entity;
 

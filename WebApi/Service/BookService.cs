@@ -1,4 +1,4 @@
-﻿using Domain.Dto;
+﻿using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Interface;
 using WebApi.Interface;

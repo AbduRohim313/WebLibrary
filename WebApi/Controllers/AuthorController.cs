@@ -1,4 +1,4 @@
-﻿using Domain.Dto;
+﻿using Domain.Dto.UserDto;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using WebApi.Interface;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("adminPage/[controller]CRUD")]
 public class AuthorController : ControllerBase
 {
     IService<AuthorDto> _authorService;

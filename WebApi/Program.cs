@@ -1,6 +1,6 @@
 using System.Text;
 using Domain;
-using Domain.Dto;
+using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
 using Domain.Interface;
@@ -52,7 +52,7 @@ builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
-builder.Services.AddScoped<IAuthService<UserDto>, UserService>();
+builder.Services.AddScoped<IAuthService<UserDto, UserGetById>, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

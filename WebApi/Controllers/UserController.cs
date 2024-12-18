@@ -1,4 +1,4 @@
-﻿using Domain.Dto;
+﻿using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -8,14 +8,14 @@ using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
-[Route("[controller]")]
+[Route("adminPage/[controller]CRUD")]
 [ApiController]
 [Authorize(Roles = nameof(Position.Admin))]
 public class UserController : ControllerBase
 {
-    IAuthService<UserDto> _userService;
+    IAuthService<UserDto, UserGetById> _userService;
 
-    public UserController(IAuthService<UserDto> userService)
+    public UserController(IAuthService<UserDto, UserGetById> userService)
     {
         _userService = userService;
     }
@@ -66,7 +66,7 @@ public class UserController : ControllerBase
             {
                 Message = "bunday foydalanuvchi yoq!",
             });
-        if (responce.Status == "success")
+        if (responce.Status == "Success")
         {
             return Ok(responce);
         }
