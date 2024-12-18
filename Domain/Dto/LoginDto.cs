@@ -2,9 +2,8 @@
 
 namespace Domain.Dto;
 
-public class UserDto
+public class LoginDto
 {
-    public string Id { get; set; }
     [Required]
     public string UserName { get; set; }
     [Required]

@@ -1,42 +1,81 @@
-﻿using Domain.Entity;
+﻿using Domain.Dto;
+using Domain.Entity;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
-// [Route("[controller]")]
-// [ApiController]
+[Route("[controller]")]
+[ApiController]
+[Authorize(Roles = nameof(Position.Admin))]
 public class UserController : ControllerBase
 {
-    UserManager<User> _userManager;
+    IAuthService<UserDto> _userService;
 
-    public UserController(UserManager<User> userManager)
+    public UserController(IAuthService<UserDto> userService)
     {
-        _userManager = userManager;
-    }
-    public Task<IEnumerable<User>> GetAll()
-    {
-        throw new NotImplementedException();
+        _userService = userService;
     }
 
-    public Task<User>? GetById(int id)
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
     {
-        throw new NotImplementedException();
+        return Ok(_userService.GetAll());
     }
 
-    public Task<User> Create(User data)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
     {
-        throw new NotImplementedException();
+        var user = await _userService.GetById(id);
+        if (user == null)
+            return NotFound();
+        return Ok(user);
     }
 
-    public Task<User> Update(User data)
+    [HttpPost]
+    public async Task<IActionResult> Post(LoginDto data)
     {
-        throw new NotImplementedException();
+        var responce = await _userService.Create(data);
+        if (responce == null)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
+            {
+                Message = "bunday foydalanuvchi bor!",
+                Status = "error"
+            });
+        }
+
+        if (responce.Status == "success")
+        {
+            return Ok(responce);
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
-    public Task<bool> Delete(int id)
+    [HttpPut]
+    public async Task<IActionResult> Put(UserDto data)
     {
-        throw new NotImplementedException();
+        var responce = await _userService.Update(data);
+        if (responce == null)
+            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
+            {
+                Message = "bunday foydalanuvchi yoq!",
+            });
+        if (responce.Status == "success")
+        {
+            return Ok(responce);
+        }
+        return StatusCode(StatusCodes.Status500InternalServerError);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        return await _userService.Delete(id) ? Ok("deleted") : BadRequest();
     }
 }

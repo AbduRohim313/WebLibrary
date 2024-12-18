@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
@@ -58,14 +59,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(UserDto userDto)
+    public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        var user = await _userManager.FindByNameAsync(userDto.UserName);
-        if (user != null && await _userManager.CheckPasswordAsync(user, userDto.Password))
+        var user = await _userManager.FindByNameAsync(loginDto.UserName);
+        if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
         {
             var roles = await _userManager.GetRolesAsync(user);
             List<Claim> claims = new List<Claim>();
-            Claim claim = new Claim(ClaimTypes.Name, userDto.UserName);
+            Claim claim = new Claim(ClaimTypes.Name, loginDto.UserName);
             Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
             claims.Add(claim);
             claims.Add(claimId);
@@ -91,7 +92,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPut("updateToAdmin")]
-    [Authorize(Roles = nameof(Position.Admin))]
+    // [Authorize(Roles = nameof(Position.Admin))]
     public async Task<IActionResult> UpdateToAdmin(ToAdminDto toAdminDto)
     {
         // Найти пользователя
@@ -128,5 +129,6 @@ public class AuthController : ControllerBase
 
         return Ok(new { Status = "Success", Message = $"{toAdminDto.Name} is now an Admin" });
     }
+
 
 }

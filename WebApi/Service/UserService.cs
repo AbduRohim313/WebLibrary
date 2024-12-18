@@ -1,34 +1,105 @@
-﻿using Domain.Entity;
+﻿using Domain.Dto;
+using Domain.Entity;
+using Domain.Enums;
 using Domain.Interface;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
 namespace WebApi.Service;
 
-public class UserService : IService<User>
+// [Route("[controller]")]
+// [ApiController]
+public class UserService : IAuthService<UserDto>
 {
-    public Task<IEnumerable<User>> GetAll()
+    UserManager<User> _userManager;
+
+    public UserService(UserManager<User> userManager)
     {
-        throw new NotImplementedException();
+        _userManager = userManager;
     }
 
-    public Task<User>? GetById(int id)
+    public async Task<IEnumerable<UserDto>> GetAll()
     {
-        throw new NotImplementedException();
+        var allUsers = _userManager.Users;
+        var result = new List<UserDto>();
+        foreach (var user in allUsers)
+        {
+            result.Add(new UserDto()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+            });
+        }
+
+        return result;
     }
 
-    public Task<User> Create(User data)
+    public async Task<UserDto> GetById(string id)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByIdAsync(id);
+        if (user != null)
+            return new UserDto()
+            {
+                UserName = user.UserName!,
+            };
+        return null;
     }
 
-    public Task<User> Update(User data)
+    public async Task<ResponceDto> Create(LoginDto dto)
     {
-        throw new NotImplementedException();
+        
+        var user = await _userManager.FindByNameAsync(dto.UserName);
+        if (user != null)
+            return null;
+
+        var newUser = new User()
+        {
+            UserName = dto.UserName,
+            PasswordHash = dto.Password,
+        };
+
+        var result = await _userManager.CreateAsync(newUser, dto.Password);
+        if (!result.Succeeded)
+        {
+            return new ResponceDto()
+            {
+                Status = "error",
+                Message = "user yaratilmadi",
+            };
+        }
+        await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
+
+        return new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" };
     }
 
-    public Task<bool> Delete(int id)
+    public async Task<ResponceDto> Update(UserDto userDto)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByNameAsync(userDto.UserName);
+        if(user == null)
+            return null;
+        user.UserName = userDto.UserName;
+        user.PasswordHash = userDto.Password;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            return new ResponceDto()
+            {
+                Status = "error",
+                Message = "user yaratilmadi",
+            };
+        return new ResponceDto(){Status = "Success", Message = "User mufiaqatli ozgartirildi"};
+
+    }
+
+
+    public async Task<bool> Delete(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user != null)
+        {
+            await _userManager.DeleteAsync(user);
+            return true;
+        }
+        return false;
     }
 }
