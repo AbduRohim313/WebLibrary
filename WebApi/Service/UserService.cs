@@ -126,4 +126,41 @@ public class UserService : IAuthService<UserDto, UserGetById>
 
         return false;
     }
+    //
+    // public async Task<ResponceDto> RemoveBookFromUser(string userId, int bookId)
+    // {
+    //     try
+    //     {
+    //         // Найти книгу по её ID и UserId
+    //         var book = await _bookService.GetById(bookId);
+    //         if (book == null)
+    //         {
+    //             return new ResponceDto
+    //             {
+    //                 Status = "error",
+    //                 Message = "Книга не найдена у данного пользователя"
+    //             };
+    //         }
+    //
+    //         // Удалить книгу
+    //         await _bookService.Delete(bookId);
+    //
+    //         return new ResponceDto
+    //         {
+    //             Status = "success",
+    //             Message = "Книга успешно удалена у пользователя"
+    //         };
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // Логирование ошибки
+    //         Console.WriteLine($"Ошибка при удалении книги: {ex.Message}");
+    //         return new ResponceDto
+    //         {
+    //             Status = "error",
+    //             Message = "Произошла ошибка при удалении книги"
+    //         };
+    //     }
+    // }
+
 }

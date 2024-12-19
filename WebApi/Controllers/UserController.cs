@@ -70,10 +70,12 @@ public class UserController : ControllerBase
         {
             return Ok(responce);
         }
+
         if (responce.Status == "error")
         {
             BadRequest(responce.Message);
         }
+
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -82,4 +84,52 @@ public class UserController : ControllerBase
     {
         return await _userService.Delete(id) ? Ok("deleted") : BadRequest();
     }
+    //
+    // public async Task<ResponceDto> RemoveBookFromUser(string userId, int bookId)
+    // {
+    //     try
+    //     {
+    //         // Найти книгу по её ID и UserId
+    //         var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == bookId && b.UserId == userId);
+    //         if (book == null)
+    //         {
+    //             return new ResponceDto
+    //             {
+    //                 Status = "error",
+    //                 Message = "Книга не найдена у данного пользователя"
+    //             };
+    //         }
+    //
+    //         // Удалить книгу
+    //         _dbContext.Books.Remove(book);
+    //         await _dbContext.SaveChangesAsync();
+    //
+    //         return new ResponceDto
+    //         {
+    //             Status = "success",
+    //             Message = "Книга успешно удалена у пользователя"
+    //         };
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // Логирование ошибки
+    //         Console.WriteLine($"Ошибка при удалении книги: {ex.Message}");
+    //         return new ResponceDto
+    //         {
+    //             Status = "error",
+    //             Message = "Произошла ошибка при удалении книги"
+    //         };
+    //     }
+    // }
+
+    // [HttpDelete("users/{userId}/books/{bookId}")]
+    // public async Task<IActionResult> RemoveBookFromUser(string userId, int bookId)
+    // {
+    //     var response = await _userService.(userId, bookId);
+    //
+    //     if (response.Status == "error")
+    //         return BadRequest(response);
+    //
+    //     return Ok(response);
+    // }
 }
