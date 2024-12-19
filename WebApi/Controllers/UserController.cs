@@ -70,6 +70,10 @@ public class UserController : ControllerBase
         {
             return Ok(responce);
         }
+        if (responce.Status == "error")
+        {
+            BadRequest(responce.Message);
+        }
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 

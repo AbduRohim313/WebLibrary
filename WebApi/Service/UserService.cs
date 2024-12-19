@@ -50,7 +50,6 @@ public class UserService : IAuthService<UserDto, UserGetById>
 
     public async Task<ResponceDto> Create(LoginDto dto)
     {
-        
         var user = await _userManager.FindByNameAsync(dto.UserName);
         if (user != null)
             return null;
@@ -70,6 +69,7 @@ public class UserService : IAuthService<UserDto, UserGetById>
                 Message = "user yaratilmadi",
             };
         }
+
         await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
 
         return new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" };
@@ -78,10 +78,9 @@ public class UserService : IAuthService<UserDto, UserGetById>
     public async Task<ResponceDto> Update(UserDto userDto)
     {
         var user = await _userManager.FindByIdAsync(userDto.Id);
-        if(user == null)
+        if (user == null)
             return null;
         user.UserName = userDto.UserName;
-        user.PasswordHash = userDto.Password;
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return new ResponceDto()
@@ -89,8 +88,30 @@ public class UserService : IAuthService<UserDto, UserGetById>
                 Status = "error",
                 Message = "user yaratilmadi",
             };
-        return new ResponceDto(){Status = "Success", Message = "User mufiaqatli ozgartirildi"};
+        var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+        if (!removePasswordResult.Succeeded)
+        {
+            return new ResponceDto
+            {
+                Status = "error",
+                Message = "Parolni o'chirishda xatolik: " +
+                          string.Join(", ", removePasswordResult.Errors.Select(e => e.Description))
+            };
+        }
 
+        // Установить новый пароль
+        var addPasswordResult = await _userManager.AddPasswordAsync(user, userDto.Password);
+        if (!addPasswordResult.Succeeded)
+        {
+            return new ResponceDto
+            {
+                Status = "error",
+                Message = "Yangi parolni o'rnatishda xatolik: " +
+                          string.Join(", ", addPasswordResult.Errors.Select(e => e.Description))
+            };
+        }
+
+        return new ResponceDto() { Status = "Success", Message = "User mufiaqatli ozgartirildi" };
     }
 
 
@@ -102,6 +123,7 @@ public class UserService : IAuthService<UserDto, UserGetById>
             await _userManager.DeleteAsync(user);
             return true;
         }
+
         return false;
     }
 }
