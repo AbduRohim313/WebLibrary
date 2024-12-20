@@ -5,6 +5,6 @@ namespace Domain.Entity;
 
 public class User : IdentityUser
 {
-    public Position Position { get; set; }
+    // public Position Position { get; set; }
     public IEnumerable<Book> Books { get; set; }
 }

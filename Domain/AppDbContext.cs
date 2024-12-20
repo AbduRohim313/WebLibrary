@@ -31,9 +31,9 @@ public class AppDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Book>()
             .HasKey(b => b.BookId);
 
-        modelBuilder.Entity<Book>()
-            .HasMany(c => c.Authors)
-            .WithMany(s => s.Books);
+        // modelBuilder.Entity<Book>()
+        //     .HasMany(c => c.Authors)
+        //     .WithMany(s => s.Books);
     }
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
     // {

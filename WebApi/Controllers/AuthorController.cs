@@ -6,8 +6,8 @@ using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
-[ApiController]
-[Route("adminPage/[controller]CRUD")]
+// [ApiController]
+// [Route("adminPage/[controller]CRUD")]
 public class AuthorController : ControllerBase
 {
     IService<AuthorDto> _authorService;
@@ -23,7 +23,7 @@ public class AuthorController : ControllerBase
         return Ok(await _authorService.GetAll());
     }
 
-    [HttpGet("{id}")]
+    // [HttpGet("{id}")]
     public async Task<IActionResult> GetAuthorById(int id)
     {
         return Ok(await _authorService.GetById(id));
@@ -47,8 +47,8 @@ public class AuthorController : ControllerBase
         return result != null ? Ok("mufiaqatli ozgartirildi") : BadRequest();
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    // [HttpDelete("{id}")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAuthor(int id)
     {
        return await _authorService.Delete(id) ? NoContent() : NotFound();

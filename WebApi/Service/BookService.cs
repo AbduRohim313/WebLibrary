@@ -22,7 +22,7 @@ public class BookService : IService<BookDto>
         {
             result.Add(new BookDto()
             {
-                Name = book.Name,
+                Name = book.FullName,
                 BookId = book.BookId,
             });
         }
@@ -34,7 +34,7 @@ public class BookService : IService<BookDto>
         var responce = await _repository.GetById(id);
         return new BookDto()
         {
-            Name = responce.Name,
+            Name = responce.FullName,
             BookId = responce.BookId,
         };
     }
@@ -43,11 +43,11 @@ public class BookService : IService<BookDto>
     {
         var responce = await _repository.Add(new Book()
         {
-            Name = data.Name,
+            FullName = data.Name,
         });
         return new BookDto()
         {
-            Name = responce.Name,
+            Name = responce.FullName,
             BookId = responce.BookId,
         };
     }
@@ -57,7 +57,7 @@ public class BookService : IService<BookDto>
         var responce = await _repository.GetById(data.BookId);
         if (responce == null)
             return null;
-        responce.Name = data.Name;
+        responce.FullName = data.Name;
         await _repository.Update(responce);
         return data;
     }

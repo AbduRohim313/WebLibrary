@@ -2,11 +2,11 @@
 
 namespace Domain.Entity;
 
-public class Book
+public class Book : BookBase
 {
-    public int BookId { get; set; }
-    public string Name { get; set; }
+    // public int BookId { get; set; }
+    // public string FullName { get; set; }
     public string? UserId { get; set; }
     public User? User { get; set; }
-    public List<Author> Authors { get; set; } = new();
+    // public List<Author> Authors { get; set; } = new();
 }

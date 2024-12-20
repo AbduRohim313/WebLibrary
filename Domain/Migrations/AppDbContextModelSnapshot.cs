@@ -22,21 +22,6 @@ namespace Domain.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.Property<int>("AuthorsAuthorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("BooksBookId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AuthorsAuthorId", "BooksBookId");
-
-                    b.HasIndex("BooksBookId");
-
-                    b.ToTable("AuthorBook");
-                });
-
             modelBuilder.Entity("Domain.Entity.Author", b =>
                 {
                     b.Property<int>("AuthorId")
@@ -62,7 +47,10 @@ namespace Domain.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookId"));
 
-                    b.Property<string>("Name")
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -70,6 +58,8 @@ namespace Domain.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("BookId");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("UserId");
 
@@ -117,9 +107,6 @@ namespace Domain.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -275,23 +262,12 @@ namespace Domain.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.HasOne("Domain.Entity.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorsAuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entity.Book", b =>
                 {
+                    b.HasOne("Domain.Entity.Author", null)
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("Domain.Entity.User", "User")
                         .WithMany("Books")
                         .HasForeignKey("UserId");
@@ -348,6 +324,11 @@ namespace Domain.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entity.Author", b =>
+                {
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Domain.Entity.User", b =>
