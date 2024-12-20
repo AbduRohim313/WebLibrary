@@ -48,7 +48,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy =>
         policy.RequireRole(Position.Admin.ToString()));
 });
-builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
+// builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();

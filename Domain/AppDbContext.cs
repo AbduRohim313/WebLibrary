@@ -15,7 +15,8 @@ public class AppDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Book> Books { get; set; }
-    public DbSet<Author> Authors { get; set; } = null!;
+    public DbSet<LibraryBook> LibraryBooks { get; set; }
+    // public DbSet<Author> Authors { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +30,8 @@ public class AppDbContext : IdentityDbContext<User>
             .HasForeignKey(b => b.UserId);
 
         modelBuilder.Entity<Book>()
+            .HasKey(b => b.BookId);
+        modelBuilder.Entity<LibraryBook>()
             .HasKey(b => b.BookId);
 
         // modelBuilder.Entity<Book>()
