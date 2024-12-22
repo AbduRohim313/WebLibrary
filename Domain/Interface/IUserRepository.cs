@@ -3,7 +3,7 @@ using Domain.Entity;
 
 namespace Domain.Interface;
 
-public interface IUserRepository
-{
-    public Task<bool> RemoveBookFromUser(Book book);
-}
+// public interface IUserRepository
+// {
+//     public Task<bool> RemoveBookFromUser(Book book);
+// }

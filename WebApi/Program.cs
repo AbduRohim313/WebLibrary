@@ -50,13 +50,17 @@ builder.Services.AddAuthorization(options =>
 });
 // builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
-builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
+// builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
-
+builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
 builder.Services.AddScoped<IAuthService<UserDto, UserGetById>, UserService>();
+builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
+// builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {

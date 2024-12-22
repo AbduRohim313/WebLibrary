@@ -36,9 +36,9 @@ public class BookRepository : IRepository<Book>
         return entity;
     }
 
-    public async Task<bool> Delete(int Id)
+    public async Task<bool> Delete(int id)
     {
-        _dbContext.Books.Remove((await _dbContext.Books.FindAsync(Id))!);
+        _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
         _dbContext.SaveChanges();
         return true;
     }

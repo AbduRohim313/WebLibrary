@@ -4,7 +4,7 @@ using Domain.Interface;
 
 namespace Domain.Repository;
 
-public class UserRepository : IUserRepository
+public class UserRepository// : IUserRepository
 {
     AppDbContext context;
 
