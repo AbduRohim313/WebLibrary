@@ -23,6 +23,8 @@ public class OstonaController : ControllerBase
         var data = await _service.KitobObKetish(id);
         return Ok(data);
     }
+    
+    
 
     // Метод для сохранения данных
     // [HttpPost]

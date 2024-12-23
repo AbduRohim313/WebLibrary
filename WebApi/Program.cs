@@ -15,7 +15,7 @@ using WebApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddDbContextPool<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("UserDb")));
 builder.Services.AddIdentity<User, IdentityRole>()
@@ -55,6 +55,7 @@ builder.Services.AddScoped<IService<BookDto>, BookService>();
 builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
 builder.Services.AddScoped<IAuthService<UserDto, UserGetById>, UserService>();
 builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<LibraryBookService>();
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 
@@ -93,7 +94,6 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -107,3 +107,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

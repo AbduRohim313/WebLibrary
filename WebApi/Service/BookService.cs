@@ -31,7 +31,7 @@ public class BookService : IService<BookDto>
 
     public async Task<BookDto> GetById(int id)
     {
-        var responce = await _repository.GetById(id);
+        var responce = await _repository.GetByIdAsync(id);
         return new BookDto()
         {
             Name = responce.FullName,
@@ -54,7 +54,7 @@ public class BookService : IService<BookDto>
 
     public async Task<BookDto> Update(BookDto data)
     {
-        var responce = await _repository.GetById(data.BookId);
+        var responce = await _repository.GetByIdAsync(data.BookId);
         if (responce == null)
             return null;
         responce.FullName = data.Name;
@@ -64,7 +64,7 @@ public class BookService : IService<BookDto>
 
     public async Task<bool> Delete(int id)
     {
-        if(null == await _repository.GetById(id))
+        if(null == await _repository.GetByIdAsync(id))
             return false;
         await _repository.Delete(id);
         return true;

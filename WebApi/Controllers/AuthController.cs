@@ -42,6 +42,7 @@ public class AuthController : ControllerBase
         var newUser = new User()
         {
             UserName = registerDto.UserName,
+            Books = new List<Book>()
         };
 
         var result = await _userManager.CreateAsync(newUser, registerDto.Password);
@@ -53,6 +54,7 @@ public class AuthController : ControllerBase
                 Message = "user yaratilmadi",
             });
         }
+
         await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
 
         return Ok(new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" });
@@ -70,20 +72,25 @@ public class AuthController : ControllerBase
             Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
             claims.Add(claim);
             claims.Add(claimId);
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            var token = new JwtSecurityToken(_configuration["JWT:ValidIssuer"], _configuration["JWT:ValidAudience"],
-                claims, expires: DateTime.Now.AddHours(2),
+            var token = new JwtSecurityToken(_configuration["JWT:ValidIssuer"],
+                _configuration["JWT:ValidAudience"],
+                claims,
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            // return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
         return Unauthorized();
     }
+
     [HttpGet("test-role")]
     public IActionResult TestRole()
     {
@@ -129,6 +136,4 @@ public class AuthController : ControllerBase
 
         return Ok(new { Status = "Success", Message = $"{toAdminDto.Name} is now an Admin" });
     }
-
-
 }

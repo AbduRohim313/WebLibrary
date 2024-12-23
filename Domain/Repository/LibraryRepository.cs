@@ -17,7 +17,7 @@ public class LibraryRepository : IRepository<LibraryBook>
         return context.LibraryBooks.ToArray();
     }
 
-    public async Task<LibraryBook> GetById(int id)
+    public async Task<LibraryBook> GetByIdAsync(int id)
     {
         return context.LibraryBooks.Find(id);
     }

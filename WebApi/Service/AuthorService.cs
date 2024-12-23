@@ -33,7 +33,7 @@ public class AuthorService : IService<AuthorDto>
 
     public async Task<AuthorDto> GetById(int id)
     {
-        var byId = await _repository.GetById(id);
+        var byId = await _repository.GetByIdAsync(id);
         return new AuthorDto()
         {
             Id = byId.AuthorId,
@@ -57,7 +57,7 @@ public class AuthorService : IService<AuthorDto>
 
     public async Task<AuthorDto?> Update(AuthorDto data)
     {
-        var author = await _repository.GetById(data.Id);
+        var author = await _repository.GetByIdAsync(data.Id);
         if (author == null)
             return null;
         author.FullName = data.FullName;
@@ -71,7 +71,7 @@ public class AuthorService : IService<AuthorDto>
 
     public async Task<bool> Delete(int id)
     {
-        if (await _repository.GetById(id) is not null)
+        if (await _repository.GetByIdAsync(id) is not null)
         {
             return await _repository.Delete(id);
         }
