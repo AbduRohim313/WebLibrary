@@ -9,16 +9,17 @@ using WebApi.Interface;
 namespace WebApi.Controllers;
 
 // [Route("adminPage/[controller]CRUD")]
-// [ApiController]
+[Route("[controller]")]
+[ApiController]
 // [Authorize(Roles = nameof(Position.Admin))]
 public class UserController : ControllerBase
 {
-    // IAuthService<UserDto, UserGetById> _userService;
-    //
-    // public UserController(IAuthService<UserDto, UserGetById> userService)
-    // {
-    //     _userService = userService;
-    // }
+    IAuthService<UserDto, UserGetById> _userService;
+    
+    public UserController(IAuthService<UserDto, UserGetById> userService)
+    {
+        _userService = userService;
+    }
     //
     //
     // [HttpGet]
@@ -27,14 +28,15 @@ public class UserController : ControllerBase
     //     return Ok(_userService.GetAll());
     // }
     //
-    // [HttpGet("{id}")]
-    // public async Task<IActionResult> GetById(string id)
-    // {
-    //     var user = await _userService.GetById(id);
-    //     if (user == null)
-    //         return NotFound();
-    //     return Ok(user);
-    // }
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<IActionResult> GetById(string id)
+    {
+        var user = await _userService.GetById(id);
+        if (user == null)
+            return NotFound();
+        return Ok(user);
+    }
     //
     // [HttpPost]
     // public async Task<IActionResult> Post(LoginDto data)
@@ -57,27 +59,27 @@ public class UserController : ControllerBase
     //     return StatusCode(StatusCodes.Status500InternalServerError);
     // }
     //
-    // [HttpPut]
-    // public async Task<IActionResult> Put(UserDto data)
-    // {
-    //     var responce = await _userService.Update(data);
-    //     if (responce == null)
-    //         return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
-    //         {
-    //             Message = "bunday foydalanuvchi yoq!",
-    //         });
-    //     if (responce.Status == "Success")
-    //     {
-    //         return Ok(responce);
-    //     }
-    //
-    //     if (responce.Status == "error")
-    //     {
-    //         BadRequest(responce.Message);
-    //     }
-    //
-    //     return StatusCode(StatusCodes.Status500InternalServerError);
-    // }
+    [HttpPut]
+    public async Task<IActionResult> Put(UserDto data)
+    {
+        var responce = await _userService.Update(data);
+        if (responce == null)
+            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
+            {
+                Message = "bunday foydalanuvchi yoq!",
+            });
+        if (responce.Status == "Success")
+        {
+            return Ok(responce);
+        }
+    
+        if (responce.Status == "error")
+        {
+            BadRequest(responce.Message);
+        }
+    
+        return StatusCode(StatusCodes.Status500InternalServerError);
+    }
     //
     // [HttpDelete("{id}")]
     // public async Task<IActionResult> Delete(string id)

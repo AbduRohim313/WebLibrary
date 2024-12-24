@@ -16,17 +16,14 @@ public class OstonaService : IOstonaService<BookDto>
     UserManager<User> _userManager;
     IRepository<Book> _bookRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private DbContextOptions _options;
 
     public OstonaService(IRepository<LibraryBook> libraryRepository,
-        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository,
-        DbContextOptions options)
+        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository)
     {
         _libraryRepository = libraryRepository;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
         _bookRepository = bookRepository;
-        _options = options;
     }
 
     private async Task<User> GetUserByClaimAsync()
@@ -100,8 +97,19 @@ public class OstonaService : IOstonaService<BookDto>
         };
     }
 
-    public Task<IEnumerable<BookDto>> Toplam()
+    public async Task<IEnumerable<BookDto>> Toplam()
     {
-        throw new NotImplementedException();
+        var user = await GetUserByClaimAsync();
+        var result = new List<BookDto>();
+        foreach (var book in user.Books)
+        {
+            result.Add(new BookDto()
+            {
+                Name = book.FullName,
+                BookId = book.BookId
+            });
+        }
+
+        return result;
     }
 }

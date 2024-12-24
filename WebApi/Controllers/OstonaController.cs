@@ -34,10 +34,9 @@ public class OstonaController : ControllerBase
     
 
     // Метод для сохранения данных
-    // [HttpPost]
-    // public async Task<IActionResult> SaveData([FromBody] SomeModel model)
-    // {
-    //     await _service.SaveDataAsync(model);
-    //     return Ok();
-    // }
+    [HttpGet("allusersbooks")]
+    public async Task<IActionResult> AllUsersBooks()
+    {
+        return Ok(await _service.Toplam());
+    }
 }
