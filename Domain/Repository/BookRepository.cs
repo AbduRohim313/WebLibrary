@@ -3,7 +3,7 @@ using Domain.Interface;
 
 namespace Domain.Repository;
 
-public class BookRepository : IRepository<Book>
+public class BookRepository : IRepository<Book>, IRemoveByUser
 {
     private AppDbContext _dbContext;
 
@@ -17,29 +17,34 @@ public class BookRepository : IRepository<Book>
         return _dbContext.Books.ToList();
     }
 
-    public async Task<Book> GetByIdAsync(int id)
-    {
-        return await _dbContext.Books.FindAsync(id);
-    }
+    public async Task<Book> GetByIdAsync(int id) => (await _dbContext.Books.FindAsync(id))!;
 
     public async Task<Book> Add(Book entity)
     {
         _dbContext.Books.Add(entity);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<Book> Update(Book entity)
     {
         _dbContext.Books.Update(entity);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<bool> Delete(int id)
     {
         _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveByUser(User user, int id)
+    {
+        // _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
+        user.Books.Remove(await GetByIdAsync(id));
+        await _dbContext.SaveChangesAsync();
         return true;
     }
 }

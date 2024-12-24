@@ -56,6 +56,7 @@ builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
 builder.Services.AddScoped<IAuthService<UserDto, UserGetById>, UserService>();
 builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
 builder.Services.AddScoped<LibraryBookService>();
+builder.Services.AddScoped<IRemoveByUser, BookRepository>();
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 

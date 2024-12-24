@@ -10,58 +10,82 @@ namespace WebApi.Service;
 
 public class OstonaService : IOstonaService<BookDto>
 {
-    IRepository<LibraryBook> _repository;
+    IRepository<LibraryBook> _libraryRepository;
     UserManager<User> _userManager;
+    IRemoveByUser _bookRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OstonaService(IRepository<LibraryBook> repository,
-        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+    public OstonaService(IRepository<LibraryBook> libraryRepository,
+        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRemoveByUser bookRepository)
     {
-        _repository = repository;
+        _libraryRepository = libraryRepository;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
+        _bookRepository = bookRepository;
     }
-public async Task<BookDto> KitobObKetish(int id)
-{
-    var book = await _repository.GetByIdAsync(id);
-    if (book == null)
-        return null;
 
-    // Check if HttpContext and User are not null
-    var httpContext = _httpContextAccessor.HttpContext;
-    if (httpContext == null)
-        throw new Exception("HttpContext is null!");
-
-    var user = httpContext.User;
-    if (user == null)
-        throw new Exception("User is null!");
-
-    var userIdClaim = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-    if (userIdClaim == null)
-        throw new Exception("User ID not found in token!");
-
-    var userId = userIdClaim.Value;
-
-    // Logic to add book to user and remove from library
-    var userEntity = _userManager.Users.FirstOrDefault(x => x.Id == userId);
-    if (userEntity == null)
-        throw new Exception("User not found!");
-
-    userEntity.Books.Add(new Book()
+    private async Task<User> GetUserByClaimAsync()
     {
-        FullName = book.FullName,
-        User = userEntity
-    });
-    await _repository.Delete(book.BookId);
-    return new BookDto
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
+            throw new Exception("HttpContext is null!");
+
+        var user = httpContext.User;
+        if (user == null)
+            throw new Exception("User is null!");
+        var userIdClaim = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            throw new Exception("User ID not found in token!");
+
+        var userId = userIdClaim.Value;
+        // Logic to add book to user and remove from library
+        var userEntity = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+        if (userEntity == null)
+            throw new Exception("User not found!");
+        return userEntity;
+    }
+
+    public async Task<BookDto> KitobObKetish(int id)
     {
-        BookId = book.BookId,
-        Name = book.FullName
-    };
-}
-    public Task<BookDto> KitobQaytarish(int id)
+        var book = await _libraryRepository.GetByIdAsync(id);
+        if (book == null)
+            return null;
+
+        var userEntity = await GetUserByClaimAsync();
+
+        userEntity.Books.Add(new Book()
+        {
+            FullName = book.FullName,
+            User = userEntity
+        });
+        await _libraryRepository.Delete(book.BookId);
+        return new BookDto()
+        {
+            Name = book.FullName,
+            BookId = book.BookId
+        };
+    }
+
+    public async Task<BookDto> KitobQaytarish(int id)
     {
-        throw new NotImplementedException();
+        var userEntity = await GetUserByClaimAsync();
+        var book = userEntity.Books.FirstOrDefault(x => x.BookId == id);
+        if (book == null)
+            return null;
+        // await _bookRepository.RemoveByUser(userEntity, id); // add bn remove iwlamayapti
+        userEntity.Books.Remove(book);
+        var result = await _userManager.UpdateAsync(userEntity);
+        if (!result.Succeeded)
+            return null;
+        await _libraryRepository.Add(new LibraryBook()
+        {
+            FullName = book.FullName,
+        });
+        return new BookDto()
+        {
+            Name = book.FullName,
+            BookId = book.BookId
+        };
     }
 
     public Task<IEnumerable<BookDto>> Toplam()

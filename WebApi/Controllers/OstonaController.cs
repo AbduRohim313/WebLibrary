@@ -17,10 +17,17 @@ public class OstonaController : ControllerBase
     }
 
     // Метод для получения данных
-    [HttpGet("KitobObKetiw/{id}")]
+    [HttpPut("KitobObKetiw/{id}")]
     public async Task<IActionResult> KitobObKetish(int id)
     {
         var data = await _service.KitobObKetish(id);
+        return Ok(data);
+    }
+
+    [HttpPut("KitobQaytarish/{id}")]
+    public async Task<IActionResult> KitobQaytarish(int id)
+    {
+        var data = await _service.KitobQaytarish(id);
         return Ok(data);
     }
     

@@ -24,7 +24,9 @@ public class LibraryRepository : IRepository<LibraryBook>
 
     public async Task<LibraryBook> Add(LibraryBook entity)
     {
-        throw new NotImplementedException();
+        context.LibraryBooks.Add(entity);
+        await context.SaveChangesAsync();
+        return entity;
     }
 
     public async Task<LibraryBook> Update(LibraryBook entity)
@@ -35,6 +37,6 @@ public class LibraryRepository : IRepository<LibraryBook>
     public async Task<bool> Delete(int id)
     {
         context.LibraryBooks.Remove(context.LibraryBooks.Find(id));
-        return context.SaveChanges() > 0;
+        return await context.SaveChangesAsync() > 0;
     }
 }
