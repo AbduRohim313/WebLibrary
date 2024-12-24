@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
         }
 
         await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
-
+        
         return Ok(new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" });
     }
 

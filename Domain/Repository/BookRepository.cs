@@ -47,4 +47,9 @@ public class BookRepository : IRepository<Book>, IRemoveByUser
         await _dbContext.SaveChangesAsync();
         return true;
     }
+
+    public Task<Book> Toplam(string userId)
+    {
+        throw new NotImplementedException();
+    }
 }

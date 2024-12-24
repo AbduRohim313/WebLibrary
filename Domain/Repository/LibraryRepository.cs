@@ -37,6 +37,8 @@ public class LibraryRepository : IRepository<LibraryBook>
     public async Task<bool> Delete(int id)
     {
         context.LibraryBooks.Remove(context.LibraryBooks.Find(id));
-        return await context.SaveChangesAsync() > 0;
+        await context.SaveChangesAsync();
+        return true;
+
     }
 }
