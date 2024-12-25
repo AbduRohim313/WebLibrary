@@ -14,13 +14,29 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
         _bookRepository = bookRepository;
     }
 
-    public Task<BookDto> Create(BookDto dto)
+    public async Task<BookDto> Create(string userId, BookDto dto)
     {
-        throw new NotImplementedException();
+        // ozi bunaqa kitob bomi yomi?
+
+        var book = _bookRepository.GetByIdAsync(dto.BookId);
+        if (book == null)
+            return null;
+        var responce = await _bookRepository.Add(new Book()
+        {
+            FullName = dto.Name,
+            BookId = dto.BookId,
+            UserId = userId
+        });
+        return new BookDto()
+        {
+            BookId = responce.BookId,
+            Name = responce.FullName
+        };
     }
 
-    public Task<bool> Delete(int id)
+
+    public async Task<bool> Delete(int bookId)
     {
-        throw new NotImplementedException();
+        return await _bookRepository.Delete(bookId);
     }
 }

@@ -59,6 +59,7 @@ builder.Services.AddScoped<IRDWithCRUD<UserDto>, UserService>();
 builder.Services.AddScoped<IUpdate<UserDto>, UserService>();
 builder.Services.AddScoped<LibraryBookService>();
 builder.Services.AddScoped<IRemoveByUser, BookRepository>();
+builder.Services.AddScoped<IUpdateUsersBookForAdmin<BookDto>, UpdateUsersBookForAdminService>();
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 

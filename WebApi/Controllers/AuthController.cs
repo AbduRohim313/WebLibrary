@@ -123,7 +123,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPut("updateToAdmin")]
-    // [Authorize(Roles = nameof(Position.Admin))]
+    [Authorize(Roles = nameof(Position.Admin))]
     public async Task<IActionResult> UpdateToAdmin(ToAdminDto toAdminDto)
     {
         // Найти пользователя
