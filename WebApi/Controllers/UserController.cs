@@ -8,31 +8,31 @@ using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
-// [Route("adminPage/[controller]CRUD")]
-[Route("[controller]")]
+[Route("adminPage/[controller]CRUD")]
+// [Route("[controller]")]
 [ApiController]
-// [Authorize(Roles = nameof(Position.Admin))]
+[Authorize(Roles = nameof(Position.Admin))]
 public class UserController : ControllerBase
 {
-    IAuthService<UserDto, UserGetById> _userService;
-    
-    public UserController(IAuthService<UserDto, UserGetById> userService)
+    private IRDWithCRUD<UserDto> _rdWithCrud;
+    private IUpdate<UserDto> _update;
+
+    public UserController(IUpdate<UserDto> update, IRDWithCRUD<UserDto> rdWithCrud)
     {
-        _userService = userService;
+        _update = update;
+        _rdWithCrud = rdWithCrud;
     }
-    //
-    //
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllUsers()
-    // {
-    //     return Ok(_userService.GetAll());
-    // }
-    //
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        return Ok(_rdWithCrud.GetAll());
+    }
+    
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<IActionResult> GetById(string id)
     {
-        var user = await _userService.GetById(id);
+        var user = await _rdWithCrud.GetById(id);
         if (user == null)
             return NotFound();
         return Ok(user);
@@ -41,7 +41,7 @@ public class UserController : ControllerBase
     // [HttpPost]
     // public async Task<IActionResult> Post(LoginDto data)
     // {
-    //     var responce = await _userService.Create(data);
+    //     var responce = await _rdWithCrud.Create(data);
     //     if (responce == null)
     //     {
     //         return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
@@ -58,11 +58,11 @@ public class UserController : ControllerBase
     //
     //     return StatusCode(StatusCodes.Status500InternalServerError);
     // }
-    //
+    
     [HttpPut]
     public async Task<IActionResult> Put(UserDto data)
     {
-        var responce = await _userService.Update(data);
+        var responce = await _update.Update(data);
         if (responce == null)
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
             {
@@ -80,13 +80,13 @@ public class UserController : ControllerBase
     
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
-    //
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> Delete(string id)
-    // {
-    //     return await _userService.Delete(id) ? Ok("deleted") : BadRequest();
-    // }
-    //
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        return await _rdWithCrud.Delete(id) ? Ok("deleted") : BadRequest();
+    }
+    
     // public async Task<ResponceDto> RemoveBookFromUser(string userId, int bookId)
     // {
     //     try
@@ -123,11 +123,11 @@ public class UserController : ControllerBase
     //         };
     //     }
     // }
-
+    //
     // [HttpDelete("users/{userId}/books/{bookId}")]
     // public async Task<IActionResult> RemoveBookFromUser(string userId, int bookId)
     // {
-    //     var response = await _userService.(userId, bookId);
+    //     var response = await _rdWithCrud.(userId, bookId);
     //
     //     if (response.Status == "error")
     //         return BadRequest(response);

@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Book> Books { get; set; }
+    // public DbSet<Admin> Admins { get; set; }
     public DbSet<LibraryBook> LibraryBooks { get; set; }
     // public DbSet<Author> Authors { get; set; } = null!;
 

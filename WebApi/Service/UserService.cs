@@ -8,9 +8,7 @@ using WebApi.Interface;
 
 namespace WebApi.Service;
 
-// [Route("[controller]")]
-// [ApiController]
-public class UserService : IAuthService<UserDto, UserGetById>
+public class UserService : IRDWithCRUD<UserDto>, IUpdate<UserDto>
 {
     UserManager<User> _userManager;
 
@@ -35,45 +33,44 @@ public class UserService : IAuthService<UserDto, UserGetById>
         return result;
     }
 
-    public async Task<UserGetById> GetById(string id)
+    public async Task<UserDto> GetById(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user != null)
-            return new UserGetById()
+            return new UserDto()
             {
                 Id = user.Id,
                 UserName = user.UserName!,
-                Books = user.Books
             };
         return null;
     }
 
-    public async Task<ResponceDto> Create(LoginDto dto)
-    {
-        var user = await _userManager.FindByNameAsync(dto.UserName);
-        if (user != null)
-            return null;
-
-        var newUser = new User()
-        {
-            UserName = dto.UserName,
-            PasswordHash = dto.Password,
-        };
-
-        var result = await _userManager.CreateAsync(newUser, dto.Password);
-        if (!result.Succeeded)
-        {
-            return new ResponceDto()
-            {
-                Status = "error",
-                Message = "user yaratilmadi",
-            };
-        }
-
-        await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
-
-        return new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" };
-    }
+    // public async Task<ResponceDto> Create(LoginDto dto)
+    // {
+    //     var user = await _userManager.FindByNameAsync(dto.UserName);
+    //     if (user != null)
+    //         return null;
+    //
+    //     var newUser = new User()
+    //     {
+    //         UserName = dto.UserName,
+    //         PasswordHash = dto.Password,
+    //     };
+    //
+    //     var result = await _userManager.CreateAsync(newUser, dto.Password);
+    //     if (!result.Succeeded)
+    //     {
+    //         return new ResponceDto()
+    //         {
+    //             Status = "error",
+    //             Message = "user yaratilmadi",
+    //         };
+    //     }
+    //
+    //     await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
+    //
+    //     return new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" };
+    // }
 
     public async Task<ResponceDto> Update(UserDto userDto)
     {
@@ -98,7 +95,7 @@ public class UserService : IAuthService<UserDto, UserGetById>
                           string.Join(", ", removePasswordResult.Errors.Select(e => e.Description))
             };
         }
-
+    
         // Установить новый пароль
         var addPasswordResult = await _userManager.AddPasswordAsync(user, userDto.Password);
         if (!addPasswordResult.Succeeded)
@@ -110,7 +107,7 @@ public class UserService : IAuthService<UserDto, UserGetById>
                           string.Join(", ", addPasswordResult.Errors.Select(e => e.Description))
             };
         }
-
+    
         return new ResponceDto() { Status = "Success", Message = "User mufiaqatli ozgartirildi" };
     }
 

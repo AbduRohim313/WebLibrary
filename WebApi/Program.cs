@@ -53,8 +53,10 @@ builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 // builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
 builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
-builder.Services.AddScoped<IAuthService<UserDto, UserGetById>, UserService>();
+// builder.Services.AddScoped<IAuthService<UserDto>, UserService>(); // Ensure UserService implements IAuthService<UserDto>
 builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<IRDWithCRUD<UserDto>, UserService>();
+builder.Services.AddScoped<IUpdate<UserDto>, UserService>();
 builder.Services.AddScoped<LibraryBookService>();
 builder.Services.AddScoped<IRemoveByUser, BookRepository>();
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
@@ -66,6 +68,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
+    
     // Добавляем поддержку авторизации через JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -108,5 +111,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-//WEBLibraryCore
