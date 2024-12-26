@@ -26,6 +26,7 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
        var books = await _irdRepository.GetAll();
          return books.Select(x => new LibraryBookDto()
          {
+             Id = x.BookId,
              FullName = x.FullName
          });
     }
