@@ -2,7 +2,7 @@
 
 namespace WebApi.Interface;
 
-public interface IUpdate<T>
+public interface IUpdateService<T>
 {
     public Task<ResponceDto> Update(T dto);
 }

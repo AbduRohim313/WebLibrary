@@ -14,25 +14,25 @@ namespace WebApi.Controllers;
 [Authorize(Roles = nameof(Position.Admin))]
 public class UserController : ControllerBase
 {
-    private IRDWithCRUD<UserDto> _rdWithCrud;
-    private IUpdate<UserDto> _update;
+    private IRDWithCRUDService<UserDto, string> _irdWithCrudService;
+    private IUpdateService<UserDto> _updateService;
 
-    public UserController(IUpdate<UserDto> update, IRDWithCRUD<UserDto> rdWithCrud)
+    public UserController(IUpdateService<UserDto> updateService, IRDWithCRUDService<UserDto, string> irdWithCrudService)
     {
-        _update = update;
-        _rdWithCrud = rdWithCrud;
+        _updateService = updateService;
+        _irdWithCrudService = irdWithCrudService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        return Ok(_rdWithCrud.GetAll());
+        return Ok(_irdWithCrudService.GetAll());
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        var user = await _rdWithCrud.GetById(id);
+        var user = await _irdWithCrudService.GetById(id);
         if (user == null)
             return NotFound();
         return Ok(user);
@@ -62,7 +62,7 @@ public class UserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put(UserDto data)
     {
-        var responce = await _update.Update(data);
+        var responce = await _updateService.Update(data);
         if (responce == null)
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
             {
@@ -84,7 +84,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        return await _rdWithCrud.Delete(id) ? Ok("deleted") : BadRequest();
+        return await _irdWithCrudService.Delete(id) ? Ok("deleted") : BadRequest();
     }
     
     // public async Task<ResponceDto> RemoveBookFromUser(string userId, int bookId)

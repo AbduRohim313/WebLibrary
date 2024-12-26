@@ -2,7 +2,7 @@
 
 namespace WebApi.Interface;
 
-public interface ICreate<T>
+public interface ICreateService<T>
 {
     public Task<ResponceDto> Create(T dto);
 }

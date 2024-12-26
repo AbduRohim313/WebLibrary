@@ -12,18 +12,21 @@ namespace WebApi.Service;
 
 public class OstonaService : IOstonaService<BookDto>
 {
-    IRepository<LibraryBook> _libraryRepository;
+    // IRepository<LibraryBook> _libraryRepository;
+    IRDRepository<LibraryBook> _irdRepository;
+    ICreateRepository<LibraryBook> _createRepository;
     UserManager<User> _userManager;
     IRepository<Book> _bookRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OstonaService(IRepository<LibraryBook> libraryRepository,
-        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository)
+    public OstonaService(
+        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository, IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
     {
-        _libraryRepository = libraryRepository;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
         _bookRepository = bookRepository;
+        _irdRepository = irdRepository;
+        _createRepository = createRepository;
     }
 
     private async Task<User> GetUserByClaimAsync()
@@ -52,7 +55,7 @@ public class OstonaService : IOstonaService<BookDto>
 
     public async Task<BookDto> KitobObKetish(int id)
     {
-        var book = await _libraryRepository.GetByIdAsync(id);
+        var book = await _irdRepository.GetByIdAsync(id);
         if (book == null)
             return null;
 
@@ -64,7 +67,7 @@ public class OstonaService : IOstonaService<BookDto>
             User = userEntity
         });
         _userManager.UpdateAsync(userEntity).Wait();
-        await _libraryRepository.Delete(book.BookId);
+        await _irdRepository.Delete(book.BookId);
         return new BookDto()
         {
             Name = book.FullName,
@@ -85,7 +88,7 @@ public class OstonaService : IOstonaService<BookDto>
         // var result = await _bookRepository.RemoveByUser(userEntity, id);
         if (result == false)
             return null;
-        await _libraryRepository.Add(new LibraryBook()
+        await _createRepository.Add(new LibraryBook()
         {
             FullName = book.FullName,
         });

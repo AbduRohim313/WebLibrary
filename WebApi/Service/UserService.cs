@@ -8,7 +8,7 @@ using WebApi.Interface;
 
 namespace WebApi.Service;
 
-public class UserService : IRDWithCRUD<UserDto>, IUpdate<UserDto>
+public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<UserDto>
 {
     UserManager<User> _userManager;
 
@@ -20,17 +20,11 @@ public class UserService : IRDWithCRUD<UserDto>, IUpdate<UserDto>
     public async Task<IEnumerable<UserDto>> GetAll()
     {
         var allUsers = _userManager.Users;
-        var result = new List<UserDto>();
-        foreach (var user in allUsers)
+        return allUsers.Select(x => new UserDto()
         {
-            result.Add(new UserDto()
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-            });
-        }
-
-        return result;
+            Id = x.Id,
+            UserName = x.UserName,
+        });
     }
 
     public async Task<UserDto> GetById(string id)
@@ -95,7 +89,7 @@ public class UserService : IRDWithCRUD<UserDto>, IUpdate<UserDto>
                           string.Join(", ", removePasswordResult.Errors.Select(e => e.Description))
             };
         }
-    
+
         // Установить новый пароль
         var addPasswordResult = await _userManager.AddPasswordAsync(user, userDto.Password);
         if (!addPasswordResult.Succeeded)
@@ -107,7 +101,7 @@ public class UserService : IRDWithCRUD<UserDto>, IUpdate<UserDto>
                           string.Join(", ", addPasswordResult.Errors.Select(e => e.Description))
             };
         }
-    
+
         return new ResponceDto() { Status = "Success", Message = "User mufiaqatli ozgartirildi" };
     }
 

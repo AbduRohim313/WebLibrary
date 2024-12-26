@@ -1,5 +1,6 @@
 using System.Text;
 using Domain;
+using Domain.Dto;
 using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
@@ -50,16 +51,24 @@ builder.Services.AddAuthorization(options =>
 });
 // builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
+// builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
 // builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
 builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
 // builder.Services.AddScoped<IAuthService<UserDto>, UserService>(); // Ensure UserService implements IAuthService<UserDto>
-builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
-builder.Services.AddScoped<IRDWithCRUD<UserDto>, UserService>();
-builder.Services.AddScoped<IUpdate<UserDto>, UserService>();
-builder.Services.AddScoped<LibraryBookService>();
+
+builder.Services.AddScoped<IRDWithCRUDService<UserDto, string>, UserService>();
+builder.Services.AddScoped<IUpdateService<UserDto>, UserService>();
+// builder.Services.AddScoped<LibraryBookService>();
 builder.Services.AddScoped<IRemoveByUser, BookRepository>();
 builder.Services.AddScoped<IUpdateUsersBookForAdmin<BookDto>, UpdateUsersBookForAdminService>();
+
+
+builder.Services.AddScoped<ICreateRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<IRDRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<ICreateService<LibraryBookDto>, LibraryBookService>();
+builder.Services.AddScoped<IRDWithCRUDService<LibraryBookDto, int>, LibraryBookService>();
+// Замените RepositoryFullCRUD<LibraryBook> на вашу фактическую реализацию.
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 

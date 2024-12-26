@@ -3,41 +3,36 @@ using Domain.Interface;
 
 namespace Domain.Repository;
 
-public class LibraryRepository : IRepository<LibraryBook>
+public class LibraryRepository : ICreateRepository<LibraryBook>, IRDRepository<LibraryBook>
 {
-    AppDbContext context;
+    AppDbContext _context;
 
     public LibraryRepository(AppDbContext context)
     {
-        this.context = context;
+        this._context = context;
     }
 
     public async Task<IEnumerable<LibraryBook>> GetAll()
     {
-        return context.LibraryBooks.ToArray();
+        return _context.LibraryBooks.ToArray();
     }
 
     public async Task<LibraryBook> GetByIdAsync(int id)
     {
-        return context.LibraryBooks.Find(id);
+        return _context.LibraryBooks.Find(id);
     }
 
     public async Task<LibraryBook> Add(LibraryBook entity)
     {
-        context.LibraryBooks.Add(entity);
-        await context.SaveChangesAsync();
+        _context.LibraryBooks.Add(entity);
+        await _context.SaveChangesAsync();
         return entity;
-    }
-
-    public async Task<LibraryBook> Update(LibraryBook entity)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<bool> Delete(int id)
     {
-        context.LibraryBooks.Remove(context.LibraryBooks.Find(id));
-        await context.SaveChangesAsync();
+        _context.LibraryBooks.Remove(_context.LibraryBooks.Find(id));
+        await _context.SaveChangesAsync();
         return true;
 
     }
