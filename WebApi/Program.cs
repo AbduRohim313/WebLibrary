@@ -68,6 +68,8 @@ builder.Services.AddScoped<ICreateRepository<LibraryBook>, LibraryRepository>();
 builder.Services.AddScoped<IRDRepository<LibraryBook>, LibraryRepository>();
 builder.Services.AddScoped<ICreateService<LibraryBookDto>, LibraryBookService>();
 builder.Services.AddScoped<IRDWithCRUDService<LibraryBookDto, int>, LibraryBookService>();
+
+builder.Services.AddScoped<IUserSettingsService<ResponceDto>, UserSettingsService>();
 // Замените RepositoryFullCRUD<LibraryBook> на вашу фактическую реализацию.
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
