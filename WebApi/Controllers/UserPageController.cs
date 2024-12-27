@@ -5,13 +5,13 @@ using WebApi.Interface;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class OstonaController : ControllerBase
+[Route("[controller]")]
+public class UserPageController : ControllerBase
 {
     private readonly IOstonaService<BookDto> _service;
 
     // Внедрение сервиса через DI
-    public OstonaController(IOstonaService<BookDto> service)
+    public UserPageController(IOstonaService<BookDto> service)
     {
         _service = service;
     }

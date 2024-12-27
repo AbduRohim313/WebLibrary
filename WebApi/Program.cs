@@ -54,7 +54,7 @@ builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 // builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
 // builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
-builder.Services.AddScoped<IOstonaService<BookDto>, OstonaService>();
+builder.Services.AddScoped<IOstonaService<BookDto>, UserPageService>();
 // builder.Services.AddScoped<IAuthService<UserDto>, UserService>(); // Ensure UserService implements IAuthService<UserDto>
 
 builder.Services.AddScoped<IRDWithCRUDService<UserDto, string>, UserService>();

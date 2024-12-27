@@ -9,11 +9,11 @@ namespace WebApi.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = nameof(Position.User))]
-public class UserSettingsController : ControllerBase
+public class UsersSettingsController : ControllerBase
 {
     IUserSettingsService<ResponceDto> _service;
 
-    public UserSettingsController(IUserSettingsService<ResponceDto> service)
+    public UsersSettingsController(IUserSettingsService<ResponceDto> service)
     {
         _service = service;
     }

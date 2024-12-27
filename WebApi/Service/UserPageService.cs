@@ -10,7 +10,7 @@ using WebApi.Interface;
 
 namespace WebApi.Service;
 
-public class OstonaService : IOstonaService<BookDto>
+public class UserPageService : IOstonaService<BookDto>
 {
     // IRepository<LibraryBook> _libraryRepository;
     IRDRepository<LibraryBook> _irdRepository;
@@ -19,7 +19,7 @@ public class OstonaService : IOstonaService<BookDto>
     IRepository<Book> _bookRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OstonaService(
+    public UserPageService(
         IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository,
         IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
     {

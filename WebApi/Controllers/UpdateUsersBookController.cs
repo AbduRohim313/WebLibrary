@@ -7,14 +7,14 @@ using WebApi.Interface;
 
 namespace WebApi.Controllers;
 
-[Route("updateUsersBookForAdmin/[controller]")]
+[Route("adminPage/[controller]")]
 
 [Authorize(Roles = nameof(Position.Admin))]
-public class UpdateUsersBookForAdminController : ControllerBase
+public class UpdateUsersBookController : ControllerBase
 {
     IUpdateUsersBookForAdmin<BookDto> _updateUsersBookForAdmin;
 
-    public UpdateUsersBookForAdminController(IUpdateUsersBookForAdmin<BookDto> updateUsersBookForAdmin)
+    public UpdateUsersBookController(IUpdateUsersBookForAdmin<BookDto> updateUsersBookForAdmin)
     {
         _updateUsersBookForAdmin = updateUsersBookForAdmin;
     }
@@ -37,10 +37,10 @@ public class UpdateUsersBookForAdminController : ControllerBase
 
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{BookId}")]
+    public async Task<IActionResult> Delete(int BookId)
     {
-        var responce = await _updateUsersBookForAdmin.Delete(id);
+        var responce = await _updateUsersBookForAdmin.Delete(BookId);
         if (responce == false)
         {
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
