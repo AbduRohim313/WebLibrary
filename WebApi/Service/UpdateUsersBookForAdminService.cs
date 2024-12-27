@@ -23,14 +23,16 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
             return null;
         var responce = await _bookRepository.Add(new Book()
         {
-            FullName = dto.Name,
             BookId = dto.BookId,
+            FullName = dto.Name,
+            Author = dto.Author,
             UserId = userId
         });
         return new BookDto()
         {
             BookId = responce.BookId,
-            Name = responce.FullName
+            Name = responce.FullName,
+            Author = responce.Author
         };
     }
 

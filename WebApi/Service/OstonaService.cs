@@ -20,7 +20,8 @@ public class OstonaService : IOstonaService<BookDto>
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public OstonaService(
-        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository, IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
+        IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository,
+        IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
@@ -64,14 +65,16 @@ public class OstonaService : IOstonaService<BookDto>
         userEntity.Books.Add(new Book()
         {
             FullName = book.FullName,
+            Author = book.Author,
             User = userEntity
         });
         _userManager.UpdateAsync(userEntity).Wait();
         await _irdRepository.Delete(book.BookId);
         return new BookDto()
         {
+            BookId = book.BookId,
             Name = book.FullName,
-            BookId = book.BookId
+            Author = book.Author
         };
     }
 
@@ -91,12 +94,14 @@ public class OstonaService : IOstonaService<BookDto>
         await _createRepository.Add(new LibraryBook()
         {
             FullName = book.FullName,
+            Author = book.Author
         });
         await _bookRepository.Delete(book.BookId);
         return new BookDto()
         {
+            BookId = book.BookId,
             Name = book.FullName,
-            BookId = book.BookId
+            Author = book.Author
         };
     }
 
@@ -108,8 +113,9 @@ public class OstonaService : IOstonaService<BookDto>
         {
             result.Add(new BookDto()
             {
+                BookId = book.BookId,
                 Name = book.FullName,
-                BookId = book.BookId
+                Author = book.Author
             });
         }
 

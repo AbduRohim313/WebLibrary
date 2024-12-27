@@ -21,6 +21,8 @@ public class UserSettingsController : ControllerBase
     public async Task<IActionResult> UpdateUsersSettings(UserSettingsDto dto)
     {
         var result = await _service.UpdateUsersSettings(dto);
+        if(result.Status == "error")
+            return BadRequest("Malumotlar to'ldirilmagan");
         return Ok(result);
     }
 }

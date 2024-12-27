@@ -22,8 +22,9 @@ public class BookService : IService<BookDto>
         {
             result.Add(new BookDto()
             {
-                Name = book.FullName,
                 BookId = book.BookId,
+                Name = book.FullName,
+                Author = book.Author
             });
         }
         return result;
@@ -34,8 +35,9 @@ public class BookService : IService<BookDto>
         var responce = await _repository.GetByIdAsync(id);
         return new BookDto()
         {
-            Name = responce.FullName,
             BookId = responce.BookId,
+            Name = responce.FullName,
+            Author = responce.Author
         };
     }
 
@@ -44,11 +46,13 @@ public class BookService : IService<BookDto>
         var responce = await _repository.Add(new Book()
         {
             FullName = data.Name,
+            Author = data.Author
         });
         return new BookDto()
         {
-            Name = responce.FullName,
             BookId = responce.BookId,
+            Name = responce.FullName,
+            Author = responce.Author
         };
     }
 
@@ -58,6 +62,7 @@ public class BookService : IService<BookDto>
         if (responce == null)
             return null;
         responce.FullName = data.Name;
+        responce.Author = data.Author;
         await _repository.Update(responce);
         return data;
     }

@@ -19,10 +19,10 @@ public class UpdateUsersBookForAdminController : ControllerBase
         _updateUsersBookForAdmin = updateUsersBookForAdmin;
     }
 
-    [HttpPost("{id}")]
-    public async Task<IActionResult> Post(string userId, [FromBody] BookDto data)
+    [HttpPost("{UseerId}")]
+    public async Task<IActionResult> Post(string UseerId, [FromBody] BookDto data)
     {
-        var responce = await _updateUsersBookForAdmin.Create(userId,data);
+        var responce = await _updateUsersBookForAdmin.Create(UseerId,data);
         if (responce == null)
         {
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()

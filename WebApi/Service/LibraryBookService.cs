@@ -27,7 +27,8 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
          return books.Select(x => new LibraryBookDto()
          {
              Id = x.BookId,
-             FullName = x.FullName
+             FullName = x.FullName,
+             Author = x.Author
          });
     }
 
@@ -38,7 +39,8 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
             return null;
         return new LibraryBookDto()
         {
-            FullName = book.FullName
+            FullName = book.FullName,
+            Author = book.Author
         };
     }
 
@@ -53,7 +55,8 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
     {
         var book = await _createRepository.Add(new LibraryBook()
         {
-            FullName = dto.FullName
+            FullName = dto.FullName,
+            Author = dto.Author,
         });
         return new ResponceDto()
         {
