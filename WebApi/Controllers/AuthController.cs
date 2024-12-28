@@ -87,32 +87,11 @@ public class AuthController : ControllerBase
             // return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
             return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         } 
-        // var admin = await _adminManager.FindByIdAsync(loginDto.UserName);
-        // if (admin != null && await _adminManager.CheckPasswordAsync(admin, loginDto.Password))
-        // {
-        //     var roles = await _adminManager.GetRolesAsync(admin);
-        //     List<Claim> claims = new List<Claim>();
-        //     // Claim claim = new Claim(ClaimTypes.Name, loginDto.UserName);
-        //     // Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
-        //     // claims.Add(claim);
-        //     // claims.Add(claimId);
-        //     claims.Add(new Claim(ClaimTypes.NameIdentifier, admin.Id));
-        //     foreach (var role in roles)
-        //     {
-        //         claims.Add(new Claim(ClaimTypes.Role, role));
-        //     }
-        //
-        //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-        //     var token = new JwtSecurityToken(_configuration["JWT:ValidIssuer"],
-        //         _configuration["JWT:ValidAudience"],
-        //         claims,
-        //         expires: DateTime.Now.AddHours(2),
-        //         signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-        //     return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo , isAdmin = true});
-        //     // return Ok(new JwtSecurityTokenHandler().WriteToken(token));
-        // }
-
-        return Unauthorized();
+        return StatusCode(StatusCodes.Status401Unauthorized, new ResponceDto()
+        {
+            Status = "error",
+            Message = "Invalid username or password"
+        });
     }
 
     [HttpGet("test-role")]

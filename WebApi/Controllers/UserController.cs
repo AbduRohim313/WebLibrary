@@ -64,7 +64,7 @@ public class UserController : ControllerBase
     {
         var responce = await _updateService.Update(data);
         if (responce == null)
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
+            return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()
             {
                 Message = "bunday foydalanuvchi yoq!",
             });
@@ -75,7 +75,7 @@ public class UserController : ControllerBase
     
         if (responce.Status == "error")
         {
-            BadRequest(responce.Message);
+             return BadRequest(responce.Message); // return qop ketibti
         }
     
         return StatusCode(StatusCodes.Status500InternalServerError);
@@ -84,7 +84,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        return await _irdWithCrudService.Delete(id) ? Ok("deleted") : BadRequest();
+        return await _irdWithCrudService.Delete(id) ? Ok("deleted") : NotFound();
     }
     
     // public async Task<ResponceDto> RemoveBookFromUser(string userId, int bookId)

@@ -30,22 +30,49 @@ public class UserSettingsService : IUserSettingsService<ResponceDto>
     {
         var user = await _userManager.FindByIdAsync(GetUserIdFromToken());
         if (user == null)
-            return null;
+            return new ResponceDto()
+            {
+                Status = "error 404",
+                Message = "Foydalanuvchi topilmadi!",
+            };
+        if (string.IsNullOrEmpty(dto.UserName) || string.IsNullOrEmpty(dto.PhoneNumber))
+        {
+            return new ResponceDto()
+            {
+                Status = "error 400",
+                Message = "Malumotlar to'ldirilmadi!",
+            };
+        }
+        var passwordValidator = new PasswordValidator<User>();
+        var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, dto.Password);
+
+        // Проверяем, прошел ли пароль валидацию
+        if (!passwordValidationResult.Succeeded)
+        {
+            return new ResponceDto
+            {
+                Status = "error 400",
+                Message = "Пароль не соответствует требованиям: " +
+                          string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description))
+            };
+        }
+
+        
         user.UserName = dto.UserName;
         user.PhoneNumber = dto.PhoneNumber;
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return new ResponceDto()
             {
-                Status = "error",
-                Message = "user ozgartirilmadi",
+                Status = "error 400",
+                Message = "user ozgartirilmadi\nBunday username yoki phone number mavjud",
             };
         var removePasswordResult = await _userManager.RemovePasswordAsync(user);
         if (!removePasswordResult.Succeeded)
         {
             return new ResponceDto
             {
-                Status = "error",
+                Status = "error 500",
                 Message = "Parolni o'chirishda xatolik: " +
                           string.Join(", ", removePasswordResult.Errors.Select(e => e.Description))
             };
@@ -57,7 +84,7 @@ public class UserSettingsService : IUserSettingsService<ResponceDto>
         {
             return new ResponceDto
             {
-                Status = "error",
+                Status = "error 500",
                 Message = "Yangi parolni o'rnatishda xatolik: " +
                           string.Join(", ", addPasswordResult.Errors.Select(e => e.Description))
             };

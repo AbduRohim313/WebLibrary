@@ -8,7 +8,6 @@ using WebApi.Interface;
 namespace WebApi.Controllers;
 
 [Route("adminPage/[controller]")]
-
 [Authorize(Roles = nameof(Position.Admin))]
 public class UpdateUsersBookController : ControllerBase
 {
@@ -19,15 +18,24 @@ public class UpdateUsersBookController : ControllerBase
         _updateUsersBookForAdmin = updateUsersBookForAdmin;
     }
 
-    [HttpPost("{UseerId}")]
-    public async Task<IActionResult> Post(string UseerId, [FromBody] BookDto data)
+    [HttpPost("{UserId}")]
+    public async Task<IActionResult> Post(string UserId, [FromBody] BookDto data)
     {
-        var responce = await _updateUsersBookForAdmin.Create(UseerId,data);
-        if (responce == null)
+        var responce = await _updateUsersBookForAdmin.Create(UserId, data);
+        if (responce.Status == "error 404")
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()
+            {
+                Message = "Foydalanuvchi topilmadi!",
+                Status = "error"
+            });
+        }
+
+        if (responce.Status == "error 400")
         {
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
             {
-                Message = "qowilmadi!",
+                Message = "Malumotlar to'ldirilmadi!",
                 Status = "error"
             });
         }
@@ -37,22 +45,23 @@ public class UpdateUsersBookController : ControllerBase
 
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
+
     [HttpDelete("{BookId}")]
     public async Task<IActionResult> Delete(int BookId)
     {
         var responce = await _updateUsersBookForAdmin.Delete(BookId);
         if (responce == false)
         {
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
+            return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()
             {
-                Message = "o'chirilmadi!",
+                Message = "bunday kitob mavjud emas!",
                 Status = "error"
             });
         }
 
         return Ok(new ResponceDto()
         {
-            Message = "o'chirildi!",
+            Message = "Kitob o'chirildi!",
             Status = "success"
         });
     }

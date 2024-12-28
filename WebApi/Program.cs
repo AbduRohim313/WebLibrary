@@ -61,6 +61,7 @@ builder.Services.AddScoped<IRDWithCRUDService<UserDto, string>, UserService>();
 builder.Services.AddScoped<IUpdateService<UserDto>, UserService>();
 // builder.Services.AddScoped<LibraryBookService>();
 builder.Services.AddScoped<IRemoveByUser, BookRepository>();
+builder.Services.AddScoped<IDetach<Book>, BookRepository>();
 builder.Services.AddScoped<IUpdateUsersBookForAdmin<BookDto>, UpdateUsersBookForAdminService>();
 
 

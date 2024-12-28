@@ -21,8 +21,13 @@ public class UsersSettingsController : ControllerBase
     public async Task<IActionResult> UpdateUsersSettings(UserSettingsDto dto)
     {
         var result = await _service.UpdateUsersSettings(dto);
-        if(result.Status == "error")
-            return BadRequest("Malumotlar to'ldirilmagan");
+        if(result.Status == "error 404")
+            return NotFound(result.Message);
+        if(result.Status == "error 400")
+            return BadRequest(result.Message);
+        if(result.Status == "error 500")
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Message);
+        
         return Ok(result);
     }
 }

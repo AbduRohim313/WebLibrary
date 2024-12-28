@@ -21,6 +21,8 @@ public class UserPageController : ControllerBase
     public async Task<IActionResult> KitobObKetish(int id)
     {
         var data = await _service.KitobObKetish(id);
+        if(data == null)
+            return NotFound();
         return Ok(data);
     }
 
@@ -28,6 +30,8 @@ public class UserPageController : ControllerBase
     public async Task<IActionResult> KitobQaytarish(int id)
     {
         var data = await _service.KitobQaytarish(id);
+        if(data == null)
+            return NotFound();
         return Ok(data);
     }
     

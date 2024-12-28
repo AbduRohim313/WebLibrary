@@ -1,9 +1,10 @@
 ﻿using Domain.Entity;
 using Domain.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Repository;
 
-public class BookRepository : IRepository<Book>, IRemoveByUser
+public class BookRepository : IRepository<Book>, IRemoveByUser, IDetach<Book>
 {
     private AppDbContext _dbContext;
 
@@ -51,5 +52,15 @@ public class BookRepository : IRepository<Book>, IRemoveByUser
     public Task<Book> Toplam(string userId)
     {
         throw new NotImplementedException();
+    }
+
+    public  void Detach(Book entity)
+    {
+        var entry = _dbContext.Entry(entity);
+        if (entry != null)
+        {
+            entry.State = EntityState.Detached;
+        }
+
     }
 }

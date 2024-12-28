@@ -48,6 +48,6 @@ public class LibraryBookController : ControllerBase
         var result = await _rdWithCrudService.Delete(id);
         if (result)
             return Ok("O'chirildi");
-        return BadRequest("O'chirilmadi");
+        return NotFound("Topilmadi");
     }
 }

@@ -71,14 +71,31 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
         var user = await _userManager.FindByIdAsync(userDto.Id);
         if (user == null)
             return null;
+
         user.UserName = userDto.UserName;
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return new ResponceDto()
             {
                 Status = "error",
-                Message = "user yaratilmadi",
+                Message = "user o'zgartirilmadi",
             };
+
+        // Создаем экземпляр PasswordValidator
+        var passwordValidator = new PasswordValidator<User>();
+        var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, userDto.Password);
+
+        // Проверяем, прошел ли пароль валидацию
+        if (!passwordValidationResult.Succeeded)
+        {
+            return new ResponceDto
+            {
+                Status = "error",
+                Message = "Пароль не соответствует требованиям: " +
+                          string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description))
+            };
+        }
+
         var removePasswordResult = await _userManager.RemovePasswordAsync(user);
         if (!removePasswordResult.Succeeded)
         {
@@ -104,7 +121,6 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
 
         return new ResponceDto() { Status = "Success", Message = "User mufiaqatli ozgartirildi" };
     }
-
 
     public async Task<bool> Delete(string id)
     {
