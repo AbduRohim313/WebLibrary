@@ -10,18 +10,18 @@ public class UserPageController : ControllerBase
 {
     private readonly IOstonaService<BookDto> _service;
 
-    // Внедрение сервиса через DI
+
     public UserPageController(IOstonaService<BookDto> service)
     {
         _service = service;
     }
 
-    // Метод для получения данных
+
     [HttpPut("KitobObKetiw/{id}")]
     public async Task<IActionResult> KitobObKetish(int id)
     {
         var data = await _service.KitobObKetish(id);
-        if(data == null)
+        if (data == null)
             return NotFound();
         return Ok(data);
     }
@@ -30,14 +30,12 @@ public class UserPageController : ControllerBase
     public async Task<IActionResult> KitobQaytarish(int id)
     {
         var data = await _service.KitobQaytarish(id);
-        if(data == null)
+        if (data == null)
             return NotFound();
         return Ok(data);
     }
-    
-    
 
-    // Метод для сохранения данных
+
     [HttpGet("allusersbooks")]
     public async Task<IActionResult> AllUsersBooks()
     {

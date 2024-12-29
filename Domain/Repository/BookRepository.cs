@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Repository;
 
-public class BookRepository : IRepository<Book>, IRemoveByUser, IDetach<Book>
+public class BookRepository : IRepository<Book>
 {
     private AppDbContext _dbContext;
 
@@ -39,28 +39,5 @@ public class BookRepository : IRepository<Book>, IRemoveByUser, IDetach<Book>
         _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
         await _dbContext.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<bool> RemoveByUser(User user, int id)
-    {
-        // _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
-        user.Books.Remove(await GetByIdAsync(id));
-        await _dbContext.SaveChangesAsync();
-        return true;
-    }
-
-    public Task<Book> Toplam(string userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public  void Detach(Book entity)
-    {
-        var entry = _dbContext.Entry(entity);
-        if (entry != null)
-        {
-            entry.State = EntityState.Detached;
-        }
-
     }
 }

@@ -47,7 +47,7 @@ public class UserPageService : IOstonaService<BookDto>
         // Logic to add book to user and remove from library
         // var userEntity = _userManager.Users.FirstOrDefault(x => x.Id == userId);
         var userEntity = _userManager.Users
-            .Include(u => u.Books) // Подключение навигационного свойства
+            .Include(u => u.Books) 
             .FirstOrDefault(x => x.Id == userId);
         if (userEntity == null)
             throw new Exception("User not found!");
@@ -85,7 +85,7 @@ public class UserPageService : IOstonaService<BookDto>
         var book = books.FirstOrDefault(x => x.BookId == id);
         if (book == null)
             return null;
-        // await _bookRepository.RemoveByUser(userEntity, id); // add bn remove iwlamayapti
+        // await _bookRepository.RemoveByUser(userEntity, id);
         var result = userEntity.Books.Remove(book);
         // var result = await _userManager.UpdateAsync(userEntity);
         // var result = await _bookRepository.RemoveByUser(userEntity, id);

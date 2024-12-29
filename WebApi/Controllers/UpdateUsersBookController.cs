@@ -41,9 +41,6 @@ public class UpdateUsersBookController : ControllerBase
         }
 
         return Ok(responce);
-
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
     [HttpDelete("{BookId}")]

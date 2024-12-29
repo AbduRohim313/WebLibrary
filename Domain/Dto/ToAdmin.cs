@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Dto.UserDto;
+namespace Domain.Dto;
 
 public class ToAdminDto
 {

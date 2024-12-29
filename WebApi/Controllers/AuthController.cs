@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Domain.Dto;
 using Domain.Dto.UserDto;
 using Domain.Entity;
 using Domain.Enums;
@@ -84,8 +85,8 @@ public class AuthController : ControllerBase
                 claims,
                 expires: DateTime.Now.AddHours(2),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-            // return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
-            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            // return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         } 
         return StatusCode(StatusCodes.Status401Unauthorized, new ResponceDto()
         {

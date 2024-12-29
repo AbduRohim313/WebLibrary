@@ -51,17 +51,13 @@ builder.Services.AddAuthorization(options =>
 });
 // builder.Services.AddScoped<IRepository<Author>, AuthorRepository>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
-// builder.Services.AddScoped<IRepository<LibraryBook>, LibraryRepository>();
 // builder.Services.AddScoped<IService<AuthorDto>, AuthorService>();
 builder.Services.AddScoped<IService<BookDto>, BookService>();
 builder.Services.AddScoped<IOstonaService<BookDto>, UserPageService>();
-// builder.Services.AddScoped<IAuthService<UserDto>, UserService>(); // Ensure UserService implements IAuthService<UserDto>
+// builder.Services.AddScoped<IAuthService<UserDto>, UserService>(); 
 
 builder.Services.AddScoped<IRDWithCRUDService<UserDto, string>, UserService>();
 builder.Services.AddScoped<IUpdateService<UserDto>, UserService>();
-// builder.Services.AddScoped<LibraryBookService>();
-builder.Services.AddScoped<IRemoveByUser, BookRepository>();
-builder.Services.AddScoped<IDetach<Book>, BookRepository>();
 builder.Services.AddScoped<IUpdateUsersBookForAdmin<BookDto>, UpdateUsersBookForAdminService>();
 
 
@@ -71,7 +67,6 @@ builder.Services.AddScoped<ICreateService<LibraryBookDto>, LibraryBookService>()
 builder.Services.AddScoped<IRDWithCRUDService<LibraryBookDto, int>, LibraryBookService>();
 
 builder.Services.AddScoped<IUserSettingsService<ResponceDto>, UserSettingsService>();
-// Замените RepositoryFullCRUD<LibraryBook> на вашу фактическую реализацию.
 // builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 
@@ -79,10 +74,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
+
+//Auth for swagger
 builder.Services.AddSwaggerGen(options =>
 {
-    
-    // Добавляем поддержку авторизации через JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -104,7 +99,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            new string[] { }
         }
     });
 });

@@ -39,10 +39,4 @@ public class AppDbContext : IdentityDbContext<User>
         //     .HasMany(c => c.Authors)
         //     .WithMany(s => s.Books);
     }
-    // protected override void OnModelCreating(ModelBuilder modelBuilder)
-    // {
-    //     modelBuilder.Entity<Book>()
-    //         .HasMany(c => c.Authors)
-    //         .WithMany(s => s.Books);
-    // }
 }

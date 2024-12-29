@@ -43,6 +43,7 @@ public class UserSettingsService : IUserSettingsService<ResponceDto>
                 Message = "Malumotlar to'ldirilmadi!",
             };
         }
+
         var passwordValidator = new PasswordValidator<User>();
         var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, dto.Password);
 
@@ -57,7 +58,7 @@ public class UserSettingsService : IUserSettingsService<ResponceDto>
             };
         }
 
-        
+
         user.UserName = dto.UserName;
         user.PhoneNumber = dto.PhoneNumber;
         var result = await _userManager.UpdateAsync(user);
