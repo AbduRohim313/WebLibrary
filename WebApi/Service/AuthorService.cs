@@ -15,7 +15,7 @@ public class AuthorService : IService<AuthorDto>
     }
 
 
-    public async Task<IEnumerable<AuthorDto>> GetAll()
+    public async Task<IEnumerable<AuthorDto>> ReadAllAsync()
     {
         var all = await _repository.GetAllAsync();
         var result = new List<AuthorDto>();
@@ -31,7 +31,7 @@ public class AuthorService : IService<AuthorDto>
         return result;
     }
 
-    public async Task<AuthorDto> GetById(int id)
+    public async Task<AuthorDto> ReadByIdAsync(int id)
     {
         var byId = await _repository.GetByIdAsync(id);
         return new AuthorDto()
@@ -41,7 +41,7 @@ public class AuthorService : IService<AuthorDto>
         };
     }
 
-    public async Task<AuthorDto> Create(AuthorDto data)
+    public async Task<AuthorDto> CreateAsync(AuthorDto data)
     {
         var author = new Author
         {
@@ -55,7 +55,7 @@ public class AuthorService : IService<AuthorDto>
         };
     }
 
-    public async Task<AuthorDto?> Update(AuthorDto data)
+    public async Task<AuthorDto?> UpdateAsync(AuthorDto data)
     {
         var author = await _repository.GetByIdAsync(data.Id);
         if (author == null)
@@ -69,7 +69,7 @@ public class AuthorService : IService<AuthorDto>
         };
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         if (await _repository.GetByIdAsync(id) is not null)
         {

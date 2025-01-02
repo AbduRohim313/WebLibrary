@@ -19,9 +19,9 @@ public class UpdateUsersBookController : ControllerBase
     }
 
     [HttpPost("{UserId}")]
-    public async Task<IActionResult> Post(string UserId, [FromBody] BookDto data)
+    public async Task<IActionResult> PostAsync(string UserId, [FromBody] BookDto data)
     {
-        var responce = await _updateUsersBookForAdmin.Create(UserId, data);
+        var responce = await _updateUsersBookForAdmin.CreateAsync(UserId, data);
         if (responce.Status == "error 404")
         {
             return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()
@@ -44,9 +44,9 @@ public class UpdateUsersBookController : ControllerBase
     }
 
     [HttpDelete("{BookId}")]
-    public async Task<IActionResult> Delete(int BookId)
+    public async Task<IActionResult> DeleteAsync(int BookId)
     {
-        var responce = await _updateUsersBookForAdmin.Delete(BookId);
+        var responce = await _updateUsersBookForAdmin.DeleteAsync(BookId);
         if (responce == false)
         {
             return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()

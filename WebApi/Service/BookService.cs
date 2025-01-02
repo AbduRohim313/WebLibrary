@@ -14,7 +14,7 @@ public class BookService : IService<BookDto>
         _repository = repository;
     }
 
-    public async Task<IEnumerable<BookDto>> GetAll()
+    public async Task<IEnumerable<BookDto>> ReadAllAsync()
     {
         var responce = await _repository.GetAllAsync();
         var result = new List<BookDto>();
@@ -30,7 +30,7 @@ public class BookService : IService<BookDto>
         return result;
     }
 
-    public async Task<BookDto> GetById(int id)
+    public async Task<BookDto> ReadByIdAsync(int id)
     {
         var responce = await _repository.GetByIdAsync(id);
         return new BookDto()
@@ -41,7 +41,7 @@ public class BookService : IService<BookDto>
         };
     }
 
-    public async Task<BookDto> Create(BookDto data)
+    public async Task<BookDto> CreateAsync(BookDto data)
     {
         var responce = await _repository.AddAsync(new Book()
         {
@@ -56,7 +56,7 @@ public class BookService : IService<BookDto>
         };
     }
 
-    public async Task<BookDto> Update(BookDto data)
+    public async Task<BookDto> UpdateAsync(BookDto data)
     {
         var responce = await _repository.GetByIdAsync(data.BookId);
         if (responce == null)
@@ -67,7 +67,7 @@ public class BookService : IService<BookDto>
         return data;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         if(null == await _repository.GetByIdAsync(id))
             return false;

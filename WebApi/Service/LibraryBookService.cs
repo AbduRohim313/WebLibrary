@@ -21,7 +21,7 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
     }
 
 
-    public async Task<IEnumerable<LibraryBookDto>> GetAll()
+    public async Task<IEnumerable<LibraryBookDto>> ReadAllAsync()
     {
        var books = await _irdRepository.GetAllAsync();
          return books.Select(x => new LibraryBookDto()
@@ -32,7 +32,7 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
          });
     }
 
-    public async Task<LibraryBookDto> GetById(int id)
+    public async Task<LibraryBookDto> ReadByIdAsync(int id)
     {
         var book = await _irdRepository.GetByIdAsync(id);
         if(book == null)
@@ -44,14 +44,14 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
         };
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         if(await _irdRepository.GetByIdAsync(id) == null)
             return false;
         return await _irdRepository.RemoveAsync(id);
     }
 
-    public async Task<ResponceDto> Create(LibraryBookDto dto)
+    public async Task<ResponceDto> CreateAsync(LibraryBookDto dto)
     {
         var book = await _iAddRepository.AddAsync(new LibraryBook()
         {

@@ -22,30 +22,30 @@ public class LibraryBookController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<LibraryBookDto>> GetAll()
+    public async Task<IEnumerable<LibraryBookDto>> GetAllAsync()
     {
-        return await _rdWithCrudService.GetAll();
+        return await _rdWithCrudService.ReadAllAsync();
     }
 
     [HttpGet("{id}")]
-    public async Task<LibraryBookDto> GetById(int id)
+    public async Task<LibraryBookDto> GetByIdAsync(int id)
     {
-        return await _rdWithCrudService.GetById(id);
+        return await _rdWithCrudService.ReadByIdAsync(id);
     }
 
     [HttpPost]
     [Authorize(Roles = nameof(Position.Admin))]
-    public async Task<ResponceDto> Post(LibraryBookDto dto)
+    public async Task<ResponceDto> PostAsync(LibraryBookDto dto)
     {
-        var responceDto = await _createService.Create(dto);
+        var responceDto = await _createService.CreateAsync(dto);
         return responceDto;
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = nameof(Position.Admin))]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteAsync(int id)
     {
-        var result = await _rdWithCrudService.Delete(id);
+        var result = await _rdWithCrudService.DeleteAsync(id);
         if (result)
             return Ok("O'chirildi");
         return NotFound("Topilmadi");

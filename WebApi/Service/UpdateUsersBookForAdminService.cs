@@ -17,7 +17,7 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
         _userManager = userManager;
     }
 
-    public async Task<ResponceDto> Create(string userId, BookDto dto)
+    public async Task<ResponceDto> CreateAsync(string userId, BookDto dto)
     {
         // ozi bunaqa kitob bomi yomi?
 
@@ -51,7 +51,7 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
     }
 
 
-    public async Task<bool> Delete(int bookId)
+    public async Task<bool> DeleteAsync(int bookId)
     {
         var book = await _bookRepository.GetByIdAsync(bookId);
         if (book == null)

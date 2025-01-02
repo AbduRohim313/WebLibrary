@@ -4,5 +4,5 @@ namespace WebApi.Interface;
 
 public interface IUserSettingsService<T>
 {
-    public Task<T> UpdateUsersSettings(UserSettingsDto dto);
+    public Task<T> UpdateUsersSettingsAsync(UserSettingsDto dto);
 }

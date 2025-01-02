@@ -4,5 +4,5 @@ namespace WebApi.Interface;
 
 public interface ICreateService<T>
 {
-    public Task<ResponceDto> Create(T dto);
+    public Task<ResponceDto> CreateAsync(T dto);
 }

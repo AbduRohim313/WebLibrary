@@ -19,9 +19,9 @@ public class UsersSettingsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUsersSettings(UserSettingsDto dto)
+    public async Task<IActionResult> UpdateUsersSettingsAsync(UserSettingsDto dto)
     {
-        var result = await _service.UpdateUsersSettings(dto);
+        var result = await _service.UpdateUsersSettingsAsync(dto);
         if (result.Status == "error 404")
             return NotFound(result.Message);
         if (result.Status == "error 400")

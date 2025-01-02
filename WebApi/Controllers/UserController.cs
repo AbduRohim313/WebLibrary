@@ -23,24 +23,24 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAllUsersAsync()
     {
-        return Ok(_irdWithCrudService.GetAll());
+        return Ok(_irdWithCrudService.ReadAllAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    public async Task<IActionResult> GetByIdAsync(string id)
     {
-        var user = await _irdWithCrudService.GetById(id);
+        var user = await _irdWithCrudService.ReadByIdAsync(id);
         if (user == null)
             return NotFound();
         return Ok(user);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(UserDto data)
+    public async Task<IActionResult> PutAsync(UserDto data)
     {
-        var responce = await _updateService.Update(data);
+        var responce = await _updateService.UpdateAsync(data);
         if (responce == null)
             return StatusCode(StatusCodes.Status404NotFound, new ResponceDto()
             {
@@ -60,8 +60,8 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> DeleteAsync(string id)
     {
-        return await _irdWithCrudService.Delete(id) ? Ok("deleted") : NotFound();
+        return await _irdWithCrudService.DeleteAsync(id) ? Ok("deleted") : NotFound();
     }
 }

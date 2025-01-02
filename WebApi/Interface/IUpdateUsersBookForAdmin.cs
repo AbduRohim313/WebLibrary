@@ -4,6 +4,6 @@ namespace WebApi.Interface;
 
 public interface IUpdateUsersBookForAdmin<T>
 {
-    public Task<ResponceDto> Create(string userId, T dto);
-    public Task<bool> Delete(int bookId);
+    public Task<ResponceDto> CreateAsync(string userId, T dto);
+    public Task<bool> DeleteAsync(int bookId);
 }

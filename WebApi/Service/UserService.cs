@@ -17,7 +17,7 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<UserDto>> GetAll()
+    public async Task<IEnumerable<UserDto>> ReadAllAsync()
     {
         var allUsers = _userManager.Users;
         return allUsers.Select(x => new UserDto()
@@ -27,7 +27,7 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
         });
     }
 
-    public async Task<UserDto> GetById(string id)
+    public async Task<UserDto> ReadByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user != null)
@@ -39,7 +39,7 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
         return null;
     }
 
-    public async Task<ResponceDto> Update(UserDto userDto)
+    public async Task<ResponceDto> UpdateAsync(UserDto userDto)
     {
         var user = await _userManager.FindByIdAsync(userDto.Id);
         if (user == null)
@@ -95,7 +95,7 @@ public class UserService : IRDWithCRUDService<UserDto, string>, IUpdateService<U
         return new ResponceDto() { Status = "Success", Message = "User mufiaqatli ozgartirildi" };
     }
 
-    public async Task<bool> Delete(string id)
+    public async Task<bool> DeleteAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user != null)

@@ -33,7 +33,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto registerDto)
+    public async Task<IActionResult> RegisterAsync(RegisterDto registerDto)
     {
         var user = await _userManager.FindByNameAsync(registerDto.UserName);
         if (user != null)
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto loginDto)
+    public async Task<IActionResult> LoginAsync(LoginDto loginDto)
     {
         var user = await _userManager.FindByNameAsync(loginDto.UserName);
         if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
@@ -117,7 +117,7 @@ public class AuthController : ControllerBase
     //     var userRole = User.Claims.FirstOrDefault(c => c.Value == ClaimTypes.Role)?.Value;
     //     return Ok($"User role: {userRole}");
     // }
-    public IActionResult TestRole()
+    public async Task<IActionResult> TestRoleAsync()
     {
         var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (string.IsNullOrEmpty(userRole))
@@ -130,7 +130,7 @@ public class AuthController : ControllerBase
 
     [HttpPut("updateToAdmin")]
     [Authorize(Roles = nameof(Position.Admin))]
-    public async Task<IActionResult> UpdateToAdmin(ToAdminDto toAdminDto)
+    public async Task<IActionResult> UpdateToAdminAsync(ToAdminDto toAdminDto)
     {
         // Найти пользователя
         var user = await _userManager.FindByNameAsync(toAdminDto.Name);

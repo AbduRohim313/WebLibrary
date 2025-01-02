@@ -26,7 +26,7 @@ public class UserSettingsService : IUserSettingsService<ResponceDto>
         return userClaim?.Value ?? string.Empty;
     }
 
-    public async Task<ResponceDto> UpdateUsersSettings(UserSettingsDto dto)
+    public async Task<ResponceDto> UpdateUsersSettingsAsync(UserSettingsDto dto)
     {
         var user = await _userManager.FindByIdAsync(GetUserIdFromToken());
         if (user == null)

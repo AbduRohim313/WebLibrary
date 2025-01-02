@@ -54,7 +54,7 @@ public class UserPageService : IOstonaService<BookDto>
         return userEntity;
     }
 
-    public async Task<BookDto> KitobObKetish(int id)
+    public async Task<BookDto> KitobObKetishAsync(int id)
     {
         var book = await _irdRepository.GetByIdAsync(id);
         if (book == null)
@@ -78,7 +78,7 @@ public class UserPageService : IOstonaService<BookDto>
         };
     }
 
-    public async Task<BookDto> KitobQaytarish(int id)
+    public async Task<BookDto> KitobQaytarishAsync(int id)
     {
         var userEntity = await GetUserByClaimAsync();
         var books = userEntity.Books;
@@ -105,7 +105,7 @@ public class UserPageService : IOstonaService<BookDto>
         };
     }
 
-    public async Task<IEnumerable<BookDto>> Toplam()
+    public async Task<IEnumerable<BookDto>> ToplamAsync()
     {
         var user = await GetUserByClaimAsync();
         var result = new List<BookDto>();

@@ -21,27 +21,27 @@ public class UserPageController : ControllerBase
 
 
     [HttpPut("KitobObKetiw/{id}")]
-    public async Task<IActionResult> KitobObKetish(int id)
+    public async Task<IActionResult> KitobObKetishAsync(int id)
     {
-        var data = await _service.KitobObKetish(id);
+        var data = await _service.KitobObKetishAsync(id);
         if (data == null)
             return NotFound();
         return Ok(data);
     }
 
     [HttpPut("KitobQaytarish/{id}")]
-    public async Task<IActionResult> KitobQaytarish(int id)
+    public async Task<IActionResult> KitobQaytarishAsync(int id)
     {
-        var data = await _service.KitobQaytarish(id);
+        var data = await _service.KitobQaytarishAsync(id);
         if (data == null)
             return NotFound();
         return Ok(data);
     }
 
 
-    [HttpGet("allusersbooks")]
-    public async Task<IActionResult> AllUsersBooks()
+    [HttpGet("allUsersBooks")]
+    public async Task<IActionResult> AllUsersBooksAsync()
     {
-        return Ok(await _service.Toplam());
+        return Ok(await _service.ToplamAsync());
     }
 }
