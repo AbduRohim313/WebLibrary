@@ -13,28 +13,28 @@ public class BookRepository : IRepository<Book>
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Book>> GetAll()
+    public async Task<IEnumerable<Book>> GetAllAsync()
     {
         return _dbContext.Books.ToList();
     }
 
     public async Task<Book> GetByIdAsync(int id) => (await _dbContext.Books.FindAsync(id))!;
 
-    public async Task<Book> Add(Book entity)
+    public async Task<Book> AddAsync(Book entity)
     {
         _dbContext.Books.Add(entity);
         await _dbContext.SaveChangesAsync();
         return entity;
     }
 
-    public async Task<Book> Update(Book entity)
+    public async Task<Book> UpdateAsync(Book entity)
     {
         _dbContext.Books.Update(entity);
         await _dbContext.SaveChangesAsync();
         return entity;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> RemoveAsync(int id)
     {
         _dbContext.Books.Remove((await _dbContext.Books.FindAsync(id))!);
         await _dbContext.SaveChangesAsync();

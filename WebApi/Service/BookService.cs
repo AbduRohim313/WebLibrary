@@ -16,7 +16,7 @@ public class BookService : IService<BookDto>
 
     public async Task<IEnumerable<BookDto>> GetAll()
     {
-        var responce = await _repository.GetAll();
+        var responce = await _repository.GetAllAsync();
         var result = new List<BookDto>();
         foreach (var book in responce)
         {
@@ -43,7 +43,7 @@ public class BookService : IService<BookDto>
 
     public async Task<BookDto> Create(BookDto data)
     {
-        var responce = await _repository.Add(new Book()
+        var responce = await _repository.AddAsync(new Book()
         {
             FullName = data.Name,
             Author = data.Author
@@ -63,7 +63,7 @@ public class BookService : IService<BookDto>
             return null;
         responce.FullName = data.Name;
         responce.Author = data.Author;
-        await _repository.Update(responce);
+        await _repository.UpdateAsync(responce);
         return data;
     }
 
@@ -71,7 +71,7 @@ public class BookService : IService<BookDto>
     {
         if(null == await _repository.GetByIdAsync(id))
             return false;
-        await _repository.Delete(id);
+        await _repository.RemoveAsync(id);
         return true;
     }
 }

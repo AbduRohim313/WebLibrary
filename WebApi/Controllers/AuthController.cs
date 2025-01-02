@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Domain;
 using Domain.Dto;
 using Domain.Dto.UserDto;
 using Domain.Entity;
@@ -20,11 +21,15 @@ public class AuthController : ControllerBase
 {
     UserManager<User> _userManager;
     IConfiguration _configuration;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AuthController(UserManager<User> userManager, IConfiguration configuration)
+
+    public AuthController(UserManager<User> userManager, IConfiguration configuration,
+        RoleManager<IdentityRole> roleManager)
     {
         this._userManager = userManager;
         _configuration = configuration;
+        _roleManager = roleManager;
     }
 
     [HttpPost("register")]
@@ -35,7 +40,7 @@ public class AuthController : ControllerBase
         {
             return StatusCode(StatusCodes.Status400BadRequest, new ResponceDto()
             {
-                Message = "User topiladi",
+                Message = "Bu username mavjud",
                 Status = "error"
             });
         }
@@ -56,8 +61,17 @@ public class AuthController : ControllerBase
             });
         }
 
-        await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
-        
+
+        var addToRoleResult = await _userManager.AddToRoleAsync(newUser, Position.User.ToString());
+        if (!addToRoleResult.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponceDto()
+            {
+                Status = "error",
+                Message = "Роль не добавлена: " + string.Join(", ", addToRoleResult.Errors.Select(e => e.Description))
+            });
+        }
+
         return Ok(new ResponceDto() { Status = "Success", Message = "User mufiaqatli yaratildi" });
     }
 
@@ -70,6 +84,7 @@ public class AuthController : ControllerBase
             var roles = await _userManager.GetRolesAsync(user);
             List<Claim> claims = new List<Claim>();
             Claim claim = new Claim(ClaimTypes.Name, loginDto.UserName);
+            // Claim claimPosition = new Claim(ClaimTypes.Role, roleUser.FirstOrDefault()??"User");
             Claim claimId = new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
             claims.Add(claim);
             claims.Add(claimId);
@@ -85,9 +100,10 @@ public class AuthController : ControllerBase
                 claims,
                 expires: DateTime.Now.AddHours(2),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
-            // return Ok(new JwtSecurityTokenHandler().WriteToken(token));
-        } 
+            // return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
         return StatusCode(StatusCodes.Status401Unauthorized, new ResponceDto()
         {
             Status = "error",
@@ -96,10 +112,20 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("test-role")]
+    // public IActionResult TestRole()
+    // {
+    //     var userRole = User.Claims.FirstOrDefault(c => c.Value == ClaimTypes.Role)?.Value;
+    //     return Ok($"User role: {userRole}");
+    // }
     public IActionResult TestRole()
     {
         var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-        return Ok($"User role: {userRole}");
+        if (string.IsNullOrEmpty(userRole))
+        {
+            return NotFound(new { Status = "Error", Message = "User role not found" });
+        }
+    
+        return Ok(new { Status = "Success", Role = userRole });
     }
 
     [HttpPut("updateToAdmin")]
@@ -126,7 +152,6 @@ public class AuthController : ControllerBase
                 });
             }
         }
-
         // Добавить пользователя в роль "Admin"
         var addResult = await _userManager.AddToRoleAsync(user, Position.Admin.ToString());
         if (!addResult.Succeeded)

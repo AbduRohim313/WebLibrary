@@ -13,21 +13,21 @@ namespace WebApi.Service;
 public class UserPageService : IOstonaService<BookDto>
 {
     // IRepository<LibraryBook> _libraryRepository;
-    IRDRepository<LibraryBook> _irdRepository;
-    ICreateRepository<LibraryBook> _createRepository;
+    IGetRemoveRepository<LibraryBook> _irdRepository;
+    IAddRepository<LibraryBook> _iAddRepository;
     UserManager<User> _userManager;
     IRepository<Book> _bookRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public UserPageService(
         IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IRepository<Book> bookRepository,
-        IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
+        IGetRemoveRepository<LibraryBook> irdRepository, IAddRepository<LibraryBook> iAddRepository)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
         _bookRepository = bookRepository;
         _irdRepository = irdRepository;
-        _createRepository = createRepository;
+        _iAddRepository = iAddRepository;
     }
 
     private async Task<User> GetUserByClaimAsync()
@@ -69,7 +69,7 @@ public class UserPageService : IOstonaService<BookDto>
             User = userEntity
         });
         _userManager.UpdateAsync(userEntity).Wait();
-        await _irdRepository.Delete(book.BookId);
+        await _irdRepository.RemoveAsync(book.BookId);
         return new BookDto()
         {
             BookId = book.BookId,
@@ -91,12 +91,12 @@ public class UserPageService : IOstonaService<BookDto>
         // var result = await _bookRepository.RemoveByUser(userEntity, id);
         if (result == false)
             return null;
-        await _createRepository.Add(new LibraryBook()
+        await _iAddRepository.AddAsync(new LibraryBook()
         {
             FullName = book.FullName,
             Author = book.Author
         });
-        await _bookRepository.Delete(book.BookId);
+        await _bookRepository.RemoveAsync(book.BookId);
         return new BookDto()
         {
             BookId = book.BookId,

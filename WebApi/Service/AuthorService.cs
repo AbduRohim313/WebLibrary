@@ -17,7 +17,7 @@ public class AuthorService : IService<AuthorDto>
 
     public async Task<IEnumerable<AuthorDto>> GetAll()
     {
-        var all = await _repository.GetAll();
+        var all = await _repository.GetAllAsync();
         var result = new List<AuthorDto>();
         foreach (var author in all)
         {
@@ -47,7 +47,7 @@ public class AuthorService : IService<AuthorDto>
         {
             FullName = data.FullName,
         };
-        var responce = await _repository.Add(author);
+        var responce = await _repository.AddAsync(author);
         return new AuthorDto()
         {
             Id = responce.AuthorId,
@@ -61,7 +61,7 @@ public class AuthorService : IService<AuthorDto>
         if (author == null)
             return null;
         author.FullName = data.FullName;
-        var result = await _repository.Update(author);
+        var result = await _repository.UpdateAsync(author);
         return new AuthorDto()
         {
             Id = result.AuthorId,
@@ -73,7 +73,7 @@ public class AuthorService : IService<AuthorDto>
     {
         if (await _repository.GetByIdAsync(id) is not null)
         {
-            return await _repository.Delete(id);
+            return await _repository.RemoveAsync(id);
         }
         return false;
     }

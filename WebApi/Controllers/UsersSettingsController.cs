@@ -1,6 +1,5 @@
 ﻿using Domain.Dto;
 using Domain.Dto.UserDto;
-using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
@@ -9,7 +8,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = nameof(Position.User))]
+[Authorize(Roles = "User")]
 public class UsersSettingsController : ControllerBase
 {
     IUserSettingsService<ResponceDto> _service;

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebApi;
 using WebApi.Interface;
 using WebApi.Service;
 
@@ -61,8 +62,8 @@ builder.Services.AddScoped<IUpdateService<UserDto>, UserService>();
 builder.Services.AddScoped<IUpdateUsersBookForAdmin<BookDto>, UpdateUsersBookForAdminService>();
 
 
-builder.Services.AddScoped<ICreateRepository<LibraryBook>, LibraryRepository>();
-builder.Services.AddScoped<IRDRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<IAddRepository<LibraryBook>, LibraryRepository>();
+builder.Services.AddScoped<IGetRemoveRepository<LibraryBook>, LibraryRepository>();
 builder.Services.AddScoped<ICreateService<LibraryBookDto>, LibraryBookService>();
 builder.Services.AddScoped<IRDWithCRUDService<LibraryBookDto, int>, LibraryBookService>();
 
@@ -105,6 +106,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+await app.SeedDataAsync();
+
 
 if (app.Environment.IsDevelopment())
 {

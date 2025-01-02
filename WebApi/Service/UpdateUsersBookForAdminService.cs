@@ -10,14 +10,11 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
 {
     IRepository<Book> _bookRepository;
     private UserManager<User> _userManager;
-    private IDetach<Book> _detach;
 
-    public UpdateUsersBookForAdminService(IRepository<Book> bookRepository, UserManager<User> userManager,
-        IDetach<Book> detach)
+    public UpdateUsersBookForAdminService(IRepository<Book> bookRepository, UserManager<User> userManager)
     {
         _bookRepository = bookRepository;
         _userManager = userManager;
-        _detach = detach;
     }
 
     public async Task<ResponceDto> Create(string userId, BookDto dto)
@@ -39,7 +36,7 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
                 Status = "error 400"
             };
 
-        var responce = await _bookRepository.Add(new Book()
+        var responce = await _bookRepository.AddAsync(new Book()
         {
             BookId = dto.BookId,
             FullName = dto.Name,
@@ -59,6 +56,6 @@ public class UpdateUsersBookForAdminService : IUpdateUsersBookForAdmin<BookDto>
         var book = await _bookRepository.GetByIdAsync(bookId);
         if (book == null)
             return false;
-        return await _bookRepository.Delete(bookId);
+        return await _bookRepository.RemoveAsync(bookId);
     }
 }

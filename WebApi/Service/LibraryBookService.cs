@@ -11,19 +11,19 @@ using Microsoft.EntityFrameworkCore;
 
 public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICreateService<LibraryBookDto>
 {
-    IRDRepository<LibraryBook> _irdRepository;
-    ICreateRepository<LibraryBook> _createRepository;
+    IGetRemoveRepository<LibraryBook> _irdRepository;
+    IAddRepository<LibraryBook> _iAddRepository;
 
-    public LibraryBookService(IRDRepository<LibraryBook> irdRepository, ICreateRepository<LibraryBook> createRepository)
+    public LibraryBookService(IGetRemoveRepository<LibraryBook> irdRepository, IAddRepository<LibraryBook> iAddRepository)
     {
         _irdRepository = irdRepository;
-        _createRepository = createRepository;
+        _iAddRepository = iAddRepository;
     }
 
 
     public async Task<IEnumerable<LibraryBookDto>> GetAll()
     {
-       var books = await _irdRepository.GetAll();
+       var books = await _irdRepository.GetAllAsync();
          return books.Select(x => new LibraryBookDto()
          {
              Id = x.BookId,
@@ -48,12 +48,12 @@ public class LibraryBookService : IRDWithCRUDService<LibraryBookDto, int>, ICrea
     {
         if(await _irdRepository.GetByIdAsync(id) == null)
             return false;
-        return await _irdRepository.Delete(id);
+        return await _irdRepository.RemoveAsync(id);
     }
 
     public async Task<ResponceDto> Create(LibraryBookDto dto)
     {
-        var book = await _createRepository.Add(new LibraryBook()
+        var book = await _iAddRepository.AddAsync(new LibraryBook()
         {
             FullName = dto.FullName,
             Author = dto.Author,

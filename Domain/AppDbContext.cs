@@ -8,17 +8,19 @@ public class AppDbContext : IdentityDbContext<User>
 {
     public AppDbContext(DbContextOptions options) : base(options)
     {
+        
     }
 
     protected AppDbContext()
     {
+        
     }
 
     public DbSet<Book> Books { get; set; }
     // public DbSet<Admin> Admins { get; set; }
     public DbSet<LibraryBook> LibraryBooks { get; set; }
     // public DbSet<Author> Authors { get; set; } = null!;
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -1,4 +1,6 @@
 ﻿using Domain.Dto.UserDto;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interface;
 
@@ -6,6 +8,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(Roles = nameof(Position.User))]
 public class UserPageController : ControllerBase
 {
     private readonly IOstonaService<BookDto> _service;
